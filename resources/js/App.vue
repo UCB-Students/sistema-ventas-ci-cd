@@ -427,6 +427,34 @@ const cambiarModulo = (modulo) => {
 };
 
 // Métodos de Autenticación
+// Métodos de Autenticación
+const configurarHeaders = (token) => {
+    // Configurar Headers para Axios
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    
+    // Configurar Headers para jQuery (DataTables)
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            // Si es una URL relativa o coincide con nuestro dominio, enviamos auth
+            if (!/^http/.test(settings.url) || settings.url.includes(window.location.hostname)) {
+                    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+            }
+        }
+    });
+
+    // Configurar manejador de errores global para jQuery (DataTables 401)
+    // Remover handlers anteriores para evitar duplicados
+    $(document).off('ajaxError'); 
+    $(document).ajaxError((event, jqxhr, settings, thrownError) => {
+        if (jqxhr.status === 401) {
+            console.warn("jQuery AJAX 401 DETECTADO (DataTables)");
+            if (localStorage.getItem('auth_token')) {
+                    logoutInvoluntario();
+            }
+        }
+    });
+};
+
 const verificarSesion = () => {
     const token = localStorage.getItem('auth_token');
     const userData = localStorage.getItem('user_data');
@@ -434,32 +462,7 @@ const verificarSesion = () => {
     if (token && userData) {
         try {
             usuario.value = JSON.parse(userData);
-            
-            // Configurar Headers para Axios
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            
-            // Configurar Headers para jQuery (DataTables)
-            // Usamos beforeSend para no enviar el token a dominios externos (como CDNs)
-            $.ajaxSetup({
-                beforeSend: function(xhr, settings) {
-                    // Si es una URL relativa o coincide con nuestro dominio, enviamos auth
-                    if (!/^http/.test(settings.url) || settings.url.includes(window.location.hostname)) {
-                         xhr.setRequestHeader("Authorization", `Bearer ${token}`);
-                    }
-                }
-            });
-
-            // Configurar manejador de errores global para jQuery (DataTables 401)
-            $(document).ajaxError((event, jqxhr, settings, thrownError) => {
-                if (jqxhr.status === 401) {
-                    console.warn("jQuery AJAX 401 DETECTADO (DataTables)");
-                    // Evitar bucle si ya estamos saliendo
-                    if (localStorage.getItem('auth_token')) {
-                         logoutInvoluntario();
-                    }
-                }
-            });
-
+            configurarHeaders(token);
             usuarioAutenticado.value = true;
             console.log("Sesión restaurada correctamente.");
         } catch (e) {
@@ -472,9 +475,13 @@ const verificarSesion = () => {
 };
 
 const handleLoginSuccess = (user) => {
-    usuario.value = user;
-    usuarioAutenticado.value = true;
-    moduloActivo.value = 'dashboard';
+    const token = localStorage.getItem('auth_token');
+    if (token) {
+        usuario.value = user;
+        configurarHeaders(token);
+        usuarioAutenticado.value = true;
+        moduloActivo.value = 'dashboard';
+    }
 };
 
 const limpiarSesion = () => {
