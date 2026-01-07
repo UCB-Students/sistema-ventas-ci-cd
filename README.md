@@ -19,6 +19,32 @@ Sistema web integral para la gestión de ventas, compras, inventario, clientes y
 -   **Base de Datos**: PostgreSQL 16+.
 -   **Herramientas**: Vite, Composer, NPM.
 
+## ✅ Testing
+
+Para ejecutar las pruebas automatizadas del proyecto:
+
+### Pruebas de Backend (PHPUnit)
+
+```bash
+php artisan test
+```
+
+### Pruebas de Frontend (si aplica)
+
+```bash
+npm run test
+```
+
+## 🔄 Integración Continua (CI)
+
+Este proyecto está preparado para CI. Se recomienda configurar un pipeline (ej. GitHub Actions) que ejecute:
+
+1.  Linting de código (PHP_CodeSniffer / ESLint).
+2.  Análisis estático (PHPStan).
+3.  Pruebas unitarias y de integración (PHPUnit).
+
+Asegúrese de configurar las variables de entorno necesarias en su proveedor de CI para la conexión a base de datos de pruebas.
+
 ## 📋 Requisitos Previos
 
 -   PHP >= 8.2

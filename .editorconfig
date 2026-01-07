@@ -14,5 +14,9 @@ trim_trailing_whitespace = false
 [*.{yml,yaml}]
 indent_size = 2
 
+[*.{js,vue,json}]
+indent_size = 4
+indent_style = space
+
 [compose.yaml]
 indent_size = 4
