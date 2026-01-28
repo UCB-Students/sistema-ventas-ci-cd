@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use App\Models\Rol;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -19,8 +19,9 @@ class UserRoleSeeder extends Seeder
         $vendedorRole = Rol::where('codigo', 'VENDEDOR')->first();
 
         // Si los roles no existen, lanzar una excepción o advertencia
-        if (!$adminRole || !$vendedorRole) {
+        if (! $adminRole || ! $vendedorRole) {
             $this->command->error('Los roles ADMIN o VENDEDOR no existen. Asegúrate de ejecutar PermisosSeeder primero.');
+
             return;
         }
 

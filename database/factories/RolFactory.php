@@ -23,7 +23,7 @@ class RolFactory extends Factory
     public function definition(): array
     {
         return [
-            'codigo' => 'ROL' . Str::random(5), // Generar un código único
+            'codigo' => 'ROL'.Str::random(5), // Generar un código único
             'nombre' => $this->faker->unique()->jobTitle(),
             'descripcion' => $this->faker->sentence(),
             'estado' => $this->faker->boolean(),

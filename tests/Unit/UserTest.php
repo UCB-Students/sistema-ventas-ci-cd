@@ -21,6 +21,7 @@ class UserTest extends TestCase
     protected function mockRolesRelationship(): Mockery\MockInterface
     {
         $mockBelongsToMany = Mockery::mock(BelongsToMany::class);
+
         return $mockBelongsToMany;
     }
 

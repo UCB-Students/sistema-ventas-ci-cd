@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
 class HealthCheckTest extends TestCase
@@ -19,7 +18,7 @@ class HealthCheckTest extends TestCase
                     'database' => ['ok' => true],
                     'cache' => ['ok' => true],
                     'storage' => ['ok' => true],
-                ]
+                ],
             ]);
     }
 
@@ -37,7 +36,7 @@ class HealthCheckTest extends TestCase
                 'status' => 'degraded',
                 'checks' => [
                     'database' => ['ok' => false],
-                ]
+                ],
             ]);
     }
 

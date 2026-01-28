@@ -6,7 +6,6 @@ use App\Models\User;
 use Database\Seeders\PermisosSeeder;
 use Database\Seeders\UserRoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class UsersAuthorizationTest extends TestCase
@@ -14,7 +13,9 @@ class UsersAuthorizationTest extends TestCase
     use RefreshDatabase;
 
     protected $adminUser;
+
     protected $vendedorUser;
+
     protected $testUser; // El usuario sin rol específico
 
     /**
@@ -32,7 +33,7 @@ class UsersAuthorizationTest extends TestCase
         $this->adminUser = User::where('email', 'admin@example.com')->first();
         $this->vendedorUser = User::where('email', 'vendedor@example.com')->first();
         $this->testUser = User::where('email', 'test@example.com')->first(); // Asumiendo que existe o es creado por otro seeder/factory
-        
+
         // Asegurarse de que el usuario testUser no tenga roles de admin o vendedor si no se desea.
         // Si la factory de User::factory()->create() lo crea sin roles, esto está bien.
         // En caso contrario, se podría hacer $this->testUser->roles()->detach();
@@ -70,7 +71,7 @@ class UsersAuthorizationTest extends TestCase
     {
         // Crear un usuario temporal para intentar verlo
         $user = User::factory()->create();
-        $this->getJson('/api/v1/usuarios/' . $user->id)
+        $this->getJson('/api/v1/usuarios/'.$user->id)
             ->assertUnauthorized();
     }
 
@@ -78,7 +79,7 @@ class UsersAuthorizationTest extends TestCase
     public function test_unauthenticated_users_cannot_update_users(): void
     {
         $user = User::factory()->create();
-        $this->putJson('/api/v1/usuarios/' . $user->id, ['name' => 'Updated Name'])
+        $this->putJson('/api/v1/usuarios/'.$user->id, ['name' => 'Updated Name'])
             ->assertUnauthorized();
     }
 
@@ -86,7 +87,7 @@ class UsersAuthorizationTest extends TestCase
     public function test_unauthenticated_users_cannot_delete_users(): void
     {
         $user = User::factory()->create();
-        $this->deleteJson('/api/v1/usuarios/' . $user->id)
+        $this->deleteJson('/api/v1/usuarios/'.$user->id)
             ->assertUnauthorized();
     }
 
@@ -101,7 +102,7 @@ class UsersAuthorizationTest extends TestCase
     public function test_unauthenticated_users_cannot_assign_roles(): void
     {
         $user = User::factory()->create();
-        $this->patchJson('/api/v1/usuarios/' . $user->id . '/roles', ['roles' => [1]])
+        $this->patchJson('/api/v1/usuarios/'.$user->id.'/roles', ['roles' => [1]])
             ->assertUnauthorized();
     }
 
@@ -109,7 +110,7 @@ class UsersAuthorizationTest extends TestCase
     public function test_unauthenticated_users_cannot_toggle_user_status(): void
     {
         $user = User::factory()->create();
-        $this->patchJson('/api/v1/usuarios/' . $user->id . '/toggle-estado')
+        $this->patchJson('/api/v1/usuarios/'.$user->id.'/toggle-estado')
             ->assertUnauthorized();
     }
 
@@ -150,7 +151,7 @@ class UsersAuthorizationTest extends TestCase
     {
         $user = User::factory()->create();
         $this->actingAs($this->adminUser, 'sanctum')
-            ->getJson('/api/v1/usuarios/' . $user->id)
+            ->getJson('/api/v1/usuarios/'.$user->id)
             ->assertOk()
             ->assertJsonFragment(['email' => $user->email]);
     }
@@ -161,7 +162,7 @@ class UsersAuthorizationTest extends TestCase
         $user = User::factory()->create();
         $updatedName = 'Nombre Actualizado';
         $this->actingAs($this->adminUser, 'sanctum')
-            ->putJson('/api/v1/usuarios/' . $user->id, ['name' => $updatedName, 'email' => $user->email]) // email es requerido en update, asumimos que no cambia
+            ->putJson('/api/v1/usuarios/'.$user->id, ['name' => $updatedName, 'email' => $user->email]) // email es requerido en update, asumimos que no cambia
             ->assertOk();
 
         $this->assertDatabaseHas('users', ['id' => $user->id, 'name' => $updatedName]);
@@ -172,7 +173,7 @@ class UsersAuthorizationTest extends TestCase
     {
         $user = User::factory()->create();
         $this->actingAs($this->adminUser, 'sanctum')
-            ->deleteJson('/api/v1/usuarios/' . $user->id)
+            ->deleteJson('/api/v1/usuarios/'.$user->id)
             ->assertOk() // 200
             ->assertJson(['message' => 'Usuario eliminado exitosamente']);
 
@@ -186,7 +187,7 @@ class UsersAuthorizationTest extends TestCase
             ->getJson('/api/v1/usuarios/roles');
 
         if ($response->status() === 500) {
-            $this->fail('Received 500 error: ' . $response->json('message') . ' - ' . $response->json('error'));
+            $this->fail('Received 500 error: '.$response->json('message').' - '.$response->json('error'));
         }
 
         $response->assertOk()
@@ -201,8 +202,8 @@ class UsersAuthorizationTest extends TestCase
                 ],
             ]);
 
-        if (!$response->json() || empty($response->json('data'))) {
-            $this->fail('The roles list is empty or malformed: ' . json_encode($response->json()));
+        if (! $response->json() || empty($response->json('data'))) {
+            $this->fail('The roles list is empty or malformed: '.json_encode($response->json()));
         }
     }
 
@@ -213,7 +214,7 @@ class UsersAuthorizationTest extends TestCase
         $someRole = \App\Models\Rol::factory()->create(); // Crear un rol para asignar
 
         $this->actingAs($this->adminUser, 'sanctum')
-            ->patchJson('/api/v1/usuarios/' . $userToAssign->id . '/roles', ['roles' => [$someRole->id]])
+            ->patchJson('/api/v1/usuarios/'.$userToAssign->id.'/roles', ['roles' => [$someRole->id]])
             ->assertOk();
 
         $this->assertTrue($userToAssign->fresh()->roles->contains($someRole));
@@ -224,7 +225,7 @@ class UsersAuthorizationTest extends TestCase
     {
         $userToToggle = User::factory()->create(['estado' => true]); // Crea un usuario activo
         $this->actingAs($this->adminUser, 'sanctum')
-            ->patchJson('/api/v1/usuarios/' . $userToToggle->id . '/toggle-estado')
+            ->patchJson('/api/v1/usuarios/'.$userToToggle->id.'/toggle-estado')
             ->assertOk()
             ->assertJson(['message' => 'Usuario desactivado']); // Espera el mensaje de desactivación, ya que se creó activo
 
@@ -265,7 +266,7 @@ class UsersAuthorizationTest extends TestCase
     {
         $user = User::factory()->create();
         $this->actingAs($this->vendedorUser, 'sanctum')
-            ->getJson('/api/v1/usuarios/' . $user->id)
+            ->getJson('/api/v1/usuarios/'.$user->id)
             ->assertForbidden();
     }
 
@@ -274,7 +275,7 @@ class UsersAuthorizationTest extends TestCase
     {
         $user = User::factory()->create();
         $this->actingAs($this->vendedorUser, 'sanctum')
-            ->putJson('/api/v1/usuarios/' . $user->id, ['name' => 'Updated Name', 'email' => $user->email])
+            ->putJson('/api/v1/usuarios/'.$user->id, ['name' => 'Updated Name', 'email' => $user->email])
             ->assertForbidden();
     }
 
@@ -283,7 +284,7 @@ class UsersAuthorizationTest extends TestCase
     {
         $user = User::factory()->create();
         $this->actingAs($this->vendedorUser, 'sanctum')
-            ->deleteJson('/api/v1/usuarios/' . $user->id)
+            ->deleteJson('/api/v1/usuarios/'.$user->id)
             ->assertForbidden();
     }
 
@@ -300,7 +301,7 @@ class UsersAuthorizationTest extends TestCase
     {
         $user = User::factory()->create();
         $this->actingAs($this->vendedorUser, 'sanctum')
-            ->patchJson('/api/v1/usuarios/' . $user->id . '/roles', ['roles' => [1]])
+            ->patchJson('/api/v1/usuarios/'.$user->id.'/roles', ['roles' => [1]])
             ->assertForbidden();
     }
 
@@ -309,7 +310,7 @@ class UsersAuthorizationTest extends TestCase
     {
         $user = User::factory()->create(['estado' => true]);
         $this->actingAs($this->vendedorUser, 'sanctum')
-            ->patchJson('/api/v1/usuarios/' . $user->id . '/toggle-estado')
+            ->patchJson('/api/v1/usuarios/'.$user->id.'/toggle-estado')
             ->assertForbidden();
     }
 
