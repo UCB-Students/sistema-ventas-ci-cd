@@ -36,6 +36,7 @@ use Illuminate\Support\Facades\DB;
  * @property-read float $porcentaje_credito_usado Porcentaje de crédito utilizado
  * @property-read Persona $persona Relación con persona
  * @property-read \Illuminate\Database\Eloquent\Collection|Venta[] $ventas Ventas del cliente
+ * @property-read int $cantidad_compras
  *
  * @method static Builder activos() Scope para filtrar clientes activos
  * @method static Builder vip() Scope para filtrar clientes VIP

@@ -280,24 +280,29 @@ class ReporteService
 
         $clientes = $query->orderBy('created_at', 'desc')->get();
 
-        // Agregar estadísticas de compras por cliente
-        foreach ($clientes as $cliente) {
-            $cliente->total_compras = Venta::where('cliente_id', $cliente->id)
+        $clientesMapeados = $clientes->map(function ($cliente) {
+            $totalVentasCompletadas = Venta::where('cliente_id', $cliente->id)
                 ->where('estado', 'Completada')
                 ->sum('total');
-            $cliente->cantidad_compras = Venta::where('cliente_id', $cliente->id)
+            $cantidadVentasCompletadas = Venta::where('cliente_id', $cliente->id)
                 ->where('estado', 'Completada')
                 ->count();
-        }
+
+            $clienteArray = $cliente->toArray();
+            $clienteArray['total_ventas_completadas'] = round($totalVentasCompletadas, 2);
+            $clienteArray['cantidad_ventas_completadas'] = $cantidadVentasCompletadas;
+
+            return $clienteArray;
+        });
 
         return [
             'titulo' => 'Reporte de Clientes',
             'fecha_generacion' => Carbon::now()->format('d/m/Y H:i'),
             'filtros' => $filtros,
-            'clientes' => $clientes,
+            'clientes' => $clientesMapeados,
             'resumen' => [
-                'total_clientes' => $clientes->count(),
-                'total_ventas' => $clientes->sum('total_compras'),
+                'total_clientes' => $clientesMapeados->count(),
+                'total_ventas' => round($clientesMapeados->sum('total_ventas_completadas'), 2),
             ],
         ];
     }
@@ -321,24 +326,29 @@ class ReporteService
 
         $proveedores = $query->orderBy('created_at', 'desc')->get();
 
-        // Agregar estadísticas de compras por proveedor
-        foreach ($proveedores as $proveedor) {
-            $proveedor->total_compras = Compra::where('proveedor_id', $proveedor->id)
+        $proveedoresMapeados = $proveedores->map(function ($proveedor) {
+            $totalComprasCompletadas = Compra::where('proveedor_id', $proveedor->id)
                 ->where('estado', 'Completada')
                 ->sum('total');
-            $proveedor->cantidad_compras = Compra::where('proveedor_id', $proveedor->id)
+            $cantidadComprasCompletadas = Compra::where('proveedor_id', $proveedor->id)
                 ->where('estado', 'Completada')
                 ->count();
-        }
+
+            $proveedorArray = $proveedor->toArray();
+            $proveedorArray['total_compras_completadas'] = round($totalComprasCompletadas, 2);
+            $proveedorArray['cantidad_compras_completadas'] = $cantidadComprasCompletadas;
+
+            return $proveedorArray;
+        });
 
         return [
             'titulo' => 'Reporte de Proveedores',
             'fecha_generacion' => Carbon::now()->format('d/m/Y H:i'),
             'filtros' => $filtros,
-            'proveedores' => $proveedores,
+            'proveedores' => $proveedoresMapeados,
             'resumen' => [
-                'total_proveedores' => $proveedores->count(),
-                'total_compras' => $proveedores->sum('total_compras'),
+                'total_proveedores' => $proveedoresMapeados->count(),
+                'total_compras' => round($proveedoresMapeados->sum('total_compras_completadas'), 2),
             ],
         ];
     }

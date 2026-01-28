@@ -3,7 +3,7 @@ parameters:
     paths:
         - app/
         - database/
-    level: 5 # Nivel de análisis (0-9)
+    level: 2
     excludePaths:
         - %rootDir%/app/Http/Middleware/*
 includes:

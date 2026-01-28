@@ -11,6 +11,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * Representa un ítem (producto) dentro de una venta.
  * Es el modelo detalle del módulo de ventas (relación maestro-detalle).
+ *
+ * @property-read float $total
+ * @property-read Venta $venta Relación con venta
+ * @property-read Producto $producto Relación con producto
  */
 class DetalleVenta extends Model
 {
@@ -40,6 +44,7 @@ class DetalleVenta extends Model
 
     protected $appends = [
         'precio_base',
+        'total',
     ];
 
     /*
@@ -67,6 +72,14 @@ class DetalleVenta extends Model
     public function getPrecioBaseAttribute(): float
     {
         return round($this->cantidad * $this->precio_unitario, 2);
+    }
+
+    /**
+     * Total del detalle de venta (asumiendo que es el subtotal por ahora)
+     */
+    public function getTotalAttribute(): float
+    {
+        return $this->subtotal;
     }
 
     /*
