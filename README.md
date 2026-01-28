@@ -86,8 +86,18 @@ Asegúrese de configurar las variables de entorno necesarias en su proveedor de 
    Este comando creará las tablas y poblará la base de datos con usuarios y datos iniciales.
 
     ```bash
-    php artisan migrate --seed
+    php artisan migrate:fresh --seed
     ```
+
+    ### Usuarios de Prueba (tras `php artisan migrate:fresh --seed`)
+
+    Para facilitar las pruebas de autenticación y autorización (roles/permisos), se han creado los siguientes usuarios:
+
+    | Rol           | Email                  | Contraseña     | Notas                                             |
+    | :------------ | :--------------------- | :------------- | :------------------------------------------------ |
+    | **Administrador** | `admin@example.com`    | `0123456789`   | Acceso completo al sistema (rol 'ADMIN').         |
+    | **Vendedor**  | `vendedor@example.com` | `0123456789`   | Permisos específicos del rol 'VENDEDOR'.          |
+    | **Básico**    | `test@example.com`     | `password`     | Usuario por defecto sin rol asignado por seeders. |
 
 6. **Crear enlace simbólico para imágenes**
 
