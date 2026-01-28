@@ -105,6 +105,13 @@ Route::prefix('v1')->group(function () {
 
         // Usuarios
         Route::prefix('usuarios')->controller(UsuarioController::class)->group(function () {
+            // Rutas personalizadas sin parámetros de ID, deben ir primero
+            Route::get('roles', 'getRoles')->middleware('permission:usuarios.ver');
+
+            // Rutas personalizadas con parámetros de ID
+            Route::patch('{id}/roles', 'asignarRoles')->middleware('permission:usuarios.asignar_roles');
+            Route::patch('{id}/toggle-estado', 'toggleEstado')->middleware('permission:usuarios.editar');
+
             // Rutas apiResource con middleware de permisos
             Route::get('/', 'index')->middleware('permission:usuarios.ver');
             Route::post('/', 'store')->middleware('permission:usuarios.crear');
@@ -112,11 +119,6 @@ Route::prefix('v1')->group(function () {
             Route::put('{usuario}', 'update')->middleware('permission:usuarios.editar');
             Route::patch('{usuario}', 'update')->middleware('permission:usuarios.editar'); // For PATCH requests to update
             Route::delete('{usuario}', 'destroy')->middleware('permission:usuarios.eliminar');
-
-            // Rutas personalizadas con middleware de permisos
-            Route::get('roles', 'getRoles')->middleware('permission:usuarios.ver');
-            Route::patch('{id}/roles', 'asignarRoles')->middleware('permission:usuarios.asignar_roles');
-            Route::patch('{id}/toggle-estado', 'toggleEstado')->middleware('permission:usuarios.editar');
         });
 
         // Reportes

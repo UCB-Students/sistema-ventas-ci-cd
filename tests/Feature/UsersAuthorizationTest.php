@@ -190,7 +190,20 @@ class UsersAuthorizationTest extends TestCase
         }
 
         $response->assertOk()
-            ->assertJsonStructure([['id', 'codigo', 'nombre']]); // Asumiendo que devuelve una lista de roles con estos campos
+            ->assertJsonStructure([
+                'success',
+                'data' => [
+                    '*' => [
+                        'id',
+                        'codigo',
+                        'nombre',
+                    ],
+                ],
+            ]);
+
+        if (!$response->json() || empty($response->json('data'))) {
+            $this->fail('The roles list is empty or malformed: ' . json_encode($response->json()));
+        }
     }
 
     /** @test */
