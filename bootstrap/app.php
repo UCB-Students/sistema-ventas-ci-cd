@@ -15,6 +15,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // Headers de Seguridad Globales
         $middleware->append(App\Http\Middleware\SecurityHeadersMiddleware::class);
 
+        // Alias para Route Middleware
+        $middleware->alias([
+            'permission' => \App\Http\Middleware\PermissionMiddleware::class,
+        ]);
         // Stateful para Sanctum (si se usa SPA, pero aquí es API stateless principalmente,
         // aunque sanctum puede gestionar cookie auth. Lo dejaremos por defecto).
     })

@@ -104,12 +104,22 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('permisos', PermisoController::class); // index, store, show, update, destroy
 
         // Usuarios
-        Route::controller(UsuarioController::class)->prefix('usuarios')->group(function () {
-            Route::get('roles', 'getRoles');
-            Route::patch('{id}/roles', 'asignarRoles');
-            Route::patch('{id}/toggle-estado', 'toggleEstado');
+        Route::prefix('usuarios')->controller(UsuarioController::class)->group(function () {
+            // Rutas personalizadas sin parámetros de ID, deben ir primero
+            Route::get('roles', 'getRoles')->middleware('permission:usuarios.ver');
+
+            // Rutas personalizadas con parámetros de ID
+            Route::patch('{id}/roles', 'asignarRoles')->middleware('permission:usuarios.asignar_roles');
+            Route::patch('{id}/toggle-estado', 'toggleEstado')->middleware('permission:usuarios.editar');
+
+            // Rutas apiResource con middleware de permisos
+            Route::get('/', 'index')->middleware('permission:usuarios.ver');
+            Route::post('/', 'store')->middleware('permission:usuarios.crear');
+            Route::get('{usuario}', 'show')->middleware('permission:usuarios.ver');
+            Route::put('{usuario}', 'update')->middleware('permission:usuarios.editar');
+            Route::patch('{usuario}', 'update')->middleware('permission:usuarios.editar'); // For PATCH requests to update
+            Route::delete('{usuario}', 'destroy')->middleware('permission:usuarios.eliminar');
         });
-        Route::apiResource('usuarios', UsuarioController::class);
 
         // Reportes
         Route::controller(ReporteController::class)->prefix('reportes')->group(function () {
