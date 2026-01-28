@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * Representa un ítem (producto) dentro de una venta.
  * Es el modelo detalle del módulo de ventas (relación maestro-detalle).
+ *
  * @property-read float $total
  * @property-read Venta $venta Relación con venta
  * @property-read Producto $producto Relación con producto
