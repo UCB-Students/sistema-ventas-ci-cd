@@ -23,8 +23,8 @@ class HealthController extends Controller
         return response()->json([
             'status' => $isHealthy ? 'ok' : 'degraded',
             'server_time' => now()->toIso8601String(),
-            'version' => config('app.version', '1.0.0'),
-            // Solo mostrar detalles de debug si la app no está en producción o tiene debug activo
+            'environment' => app()->environment(),
+            'release' => config('app.version', 'unknown'),
             'checks' => $checks,
         ], $isHealthy ? 200 : 503);
     }
