@@ -11,15 +11,14 @@ use App\Http\Controllers\Api\ReporteController;
 use App\Http\Controllers\Api\RolController;
 use App\Http\Controllers\Api\UsuarioController;
 use App\Http\Controllers\Api\VentaController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HealthController; // <--- Importante: Importar la clase
+use App\Http\Controllers\HealthController;
+use Illuminate\Support\Facades\Route; // <--- Importante: Importar la clase
 
 /*
 |--------------------------------------------------------------------------
 | API Routes
 |--------------------------------------------------------------------------
 */
-
 
 // Definición de la ruta
 Route::get('/health', HealthController::class);

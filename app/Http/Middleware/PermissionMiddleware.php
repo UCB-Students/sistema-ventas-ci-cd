@@ -12,7 +12,7 @@ class PermissionMiddleware
      * Handle an incoming request.
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     * @param  string ...$permissions  One or more permission slugs
+     * @param  string  ...$permissions  One or more permission slugs
      */
     public function handle(Request $request, Closure $next, string ...$permissions): Response
     {

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 class HealthController extends Controller
@@ -19,7 +18,7 @@ class HealthController extends Controller
         ];
 
         // Si alguno de los checks tiene 'ok' => false, el sistema no está sano
-        $isHealthy = !in_array(false, array_column($checks, 'ok'), true);
+        $isHealthy = ! in_array(false, array_column($checks, 'ok'), true);
 
         return response()->json([
             'status' => $isHealthy ? 'ok' : 'degraded',
@@ -85,7 +84,7 @@ class HealthController extends Controller
 
         // SEGURIDAD: Solo mostramos el mensaje de error si estamos en modo debug.
         // En producción, ver errores de SQL públicamente es una vulnerabilidad grave.
-        if (!$ok && config('app.debug') && $error) {
+        if (! $ok && config('app.debug') && $error) {
             $payload['error'] = $error->getMessage();
         }
 
