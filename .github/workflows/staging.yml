@@ -1,0 +1,27 @@
+name: Deploy Staging
+on:
+  workflow_call:
+
+jobs:
+  staging:
+    runs-on: self-hosted
+    environment: staging
+    steps:
+      - name: Descargar Artefacto
+        uses: actions/download-artifact@v4
+        with:
+          name: app-package
+      
+      - name: Despliegue Atómico Staging
+        run: |
+          RELEASE_PATH=/var/www/sistemaventas-staging/releases/${{ github.sha }}
+          mkdir -p $RELEASE_PATH
+          tar -xzf release.tar.gz -C $RELEASE_PATH
+          ln -sfn /var/www/sistemaventas-staging/shared/.env $RELEASE_PATH/.env
+          cd $RELEASE_PATH
+          php artisan optimize:clear
+          php artisan migrate --force
+          ln -sfn $RELEASE_PATH /var/www/sistemaventas-staging/current
+          
+      - name: Health Check
+        run: curl -f http://localhost/sistemaventas-staging/current/public/api/health

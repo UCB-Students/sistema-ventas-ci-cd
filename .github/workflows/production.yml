@@ -1,0 +1,31 @@
+name: Deploy Production
+on:
+  workflow_call:
+
+jobs:
+  production:
+    runs-on: self-hosted
+    environment: production
+    steps:
+      - name: Descargar Artefacto
+        uses: actions/download-artifact@v4
+        with:
+          name: app-package
+
+      - name: Despliegue Atómico Producción
+        run: |
+          RELEASE_PATH=/var/www/sistemaventas-prod/releases/${{ github.sha }}
+          mkdir -p $RELEASE_PATH
+          tar -xzf release.tar.gz -C $RELEASE_PATH
+          ln -sfn /var/www/sistemaventas-prod/shared/.env $RELEASE_PATH/.env
+          cd $RELEASE_PATH
+          
+          # Observabilidad (Punto D)
+          php artisan optimize:clear
+          php artisan migrate --force
+          logger -t "CI-CD" "RELEASE=${{ github.sha }} ENV=PROD USER=${{ github.actor }}"
+          
+          ln -sfn $RELEASE_PATH /var/www/sistemaventas-prod/current
+
+      - name: Health Check
+        run: curl -f http://localhost/sistemaventas-prod/current/public/api/health

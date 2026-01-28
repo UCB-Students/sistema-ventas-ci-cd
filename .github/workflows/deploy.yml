@@ -1,0 +1,33 @@
+name: Pipeline Principal CI/CD
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  # Tarea de Construcción
+  construir:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+      - name: Crear Artefacto
+        run: |
+          composer install --no-dev --optimize-autoloader
+          npm install && npm run build
+          tar -czf release.tar.gz .
+      - name: Guardar Artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-package
+          path: release.tar.gz
+
+  # Despliegue a Staging
+  deploy_staging:
+    needs: construir
+    uses: ./.github/workflows/staging.yml
+    secrets: inherit # Pasa los secrets de base de datos, etc.
+
+  # Despliegue a Producción
+  deploy_production:
+    needs: deploy_staging
+    uses: ./.github/workflows/production.yml
+    secrets: inherit
