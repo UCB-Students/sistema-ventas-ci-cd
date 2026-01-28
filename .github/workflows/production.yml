@@ -28,4 +28,4 @@ jobs:
           ln -sfn $RELEASE_PATH /var/www/sistemaventas-prod/current
 
       - name: Health Check
-        run: curl -f http://localhost/sistemaventas-prod/current/public/api/health
+        run: curl -i http://192.168.1.35:9090/api/health
