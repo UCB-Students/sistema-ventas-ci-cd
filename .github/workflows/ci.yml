@@ -36,7 +36,6 @@ jobs:
   backend_tests:
     runs-on: ubuntu-latest
     name: Backend Tests (DB Real)
-    needs: backend_quality
     services:
       postgres:
         image: postgres:17
