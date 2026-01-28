@@ -358,7 +358,7 @@ const inicializarDataTable = () => {
                     }
                     return [];
                 },
-                error: function(xhr, error, thrown) {
+                error: function(xhr, error) {
                     console.error('Error al cargar datos:', error);
                     Swal.fire({
                         icon: 'error',
@@ -507,7 +507,7 @@ const inicializarSelect2 = () => {
             try {
                 $('#selectCategoria').select2('destroy');
             } catch (e) {
-                console.log('Select2 no estaba inicializado');
+                console.log('Select2 no estaba inicializado', e);
             }
         }
 
