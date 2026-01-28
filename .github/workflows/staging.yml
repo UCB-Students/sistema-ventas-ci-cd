@@ -14,14 +14,32 @@ jobs:
       
       - name: Despliegue Atómico Staging
         run: |
+          # 1. Definir rutas
           RELEASE_PATH=/var/www/sistemaventas-staging/releases/${{ github.sha }}
           mkdir -p $RELEASE_PATH
+          
+          # 2. Descomprimir
           tar -xzf release.tar.gz -C $RELEASE_PATH
+          
+          # 3. Vincular configuración compartida
           ln -sfn /var/www/sistemaventas-staging/shared/.env $RELEASE_PATH/.env
+          
+          # 4. Ajustar Permisos (ESTE ES EL PUNTO CLAVE)
+          # Cambiamos el grupo a www-data y damos permisos de escritura a storage y cache
+          sudo chown -R fellsing:www-data $RELEASE_PATH
+          sudo chmod -R 775 $RELEASE_PATH/storage
+          sudo chmod -R 775 $RELEASE_PATH/bootstrap/cache
+          
+          # 5. Optimización de Laravel
           cd $RELEASE_PATH
           php artisan optimize:clear
           php artisan migrate --force
+          
+          # 6. Actualizar enlace simbólico (Poner en vivo)
           ln -sfn $RELEASE_PATH /var/www/sistemaventas-staging/current
           
       - name: Health Check
-        run:  curl -i http://192.168.1.35:9090/api/health
+        run: |
+          # Damos 5 segundos para que PHP-FPM reconozca el nuevo release
+          sleep 5
+          curl -f http://192.168.1.35:9090/api/health
