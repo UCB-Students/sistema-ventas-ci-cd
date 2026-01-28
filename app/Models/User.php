@@ -138,6 +138,11 @@ class User extends Authenticatable
      */
     public function tienePermiso(string $codigoPermiso): bool
     {
+        // Si el usuario es administrador, tiene todos los permisos
+        if ($this->esAdmin()) {
+            return true;
+        }
+
         return $this->roles()
             ->whereHas('permisos', function ($query) use ($codigoPermiso) {
                 $query->where('codigo', $codigoPermiso);
