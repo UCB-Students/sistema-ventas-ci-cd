@@ -1,14 +1,23 @@
-construir:
+name: Pipeline Principal CI/CD
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  # 1. Tarea de Construcción
+  construir:
     runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout del código
+        uses: actions/checkout@v4
 
       # --- CACHE DE COMPOSER ---
-      - name: Get Composer Cache Directory
+      - name: Directorio de Cache de Composer
         id: composer-cache
         run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
-      - name: Cache PHP dependencies
+      - name: Cache de dependencias PHP
         uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
@@ -16,7 +25,7 @@ construir:
           restore-keys: ${{ runner.os }}-composer-
 
       # --- CACHE DE NPM ---
-      - name: Cache Node dependencies
+      - name: Cache de dependencias Node
         uses: actions/cache@v4
         with:
           path: ~/.npm
@@ -26,11 +35,29 @@ construir:
       # --- INSTALACIÓN Y BUILD ---
       - name: Build Artifact (PHP & JS)
         run: |
-          # Usamos --frozen-lockfile o --no-interaction para evitar el warning del lock
+          # Instalamos dependencias respetando el lock
           composer install --no-dev --optimize-autoloader --no-interaction
-          
-          npm ci # 'ci' es más rápido que 'install' y respeta el lock estrictamente
+          npm ci
           npm run build
           
+          # Pausa para sincronización de archivos y compresión
           sleep 2
           tar -czf release.tar.gz . --ignore-failed-read
+          
+      - name: Guardar Artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-package
+          path: release.tar.gz
+
+  # 2. Despliegue a Staging (Llamada al Archivo 2)
+  deploy_staging:
+    needs: construir
+    uses: ./.github/workflows/staging.yml
+    secrets: inherit
+
+  # 3. Despliegue a Producción (Llamada al Archivo 3)
+  deploy_production:
+    needs: deploy_staging
+    uses: ./.github/workflows/production.yml
+    secrets: inherit
