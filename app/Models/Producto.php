@@ -4,7 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Categoria;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property \App\Models\Categoria $categoria
+ */
 class Producto extends Model
 {
     use HasFactory;
@@ -38,7 +43,7 @@ class Producto extends Model
     protected $appends = ['margen_utilidad', 'tiene_stock_bajo'];
 
     // Relación con categoría
-    public function categoria()
+    public function categoria(): BelongsTo
     {
         return $this->belongsTo(Categoria::class);
     }
