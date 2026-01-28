@@ -53,6 +53,7 @@ use Illuminate\Support\Facades\DB;
  * @property-read float $porcentaje_credito_usado Porcentaje del crédito que hemos utilizado
  * @property-read string $calificacion_texto Texto de la calificación (Excelente, Bueno, etc.)
  * @property-read Persona $persona Relación con persona
+ * @property-read int $cantidad_compras
  *
  * @method static Builder activos() Scope para filtrar proveedores activos
  * @method static Builder porTipo(string $tipo) Scope para filtrar por tipo de proveedor

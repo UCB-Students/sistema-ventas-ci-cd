@@ -7,6 +7,7 @@ use App\Services\AuditLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Rol;
 
 class AuthController extends Controller
 {
@@ -49,7 +50,7 @@ class AuthController extends Controller
 
             // Obtener roles y permisos para el frontend
             $roles = $user->roles->pluck('nombre');
-            $permisos = $user->roles->flatMap(function ($rol) {
+            $permisos = $user->roles->flatMap(function (Rol $rol) {
                 return $rol->permisos;
             })->pluck('slug')->unique();
 
@@ -102,7 +103,7 @@ class AuthController extends Controller
     {
         $user = $request->user();
         $roles = $user->roles->pluck('nombre');
-        $permisos = $user->roles->flatMap(function ($rol) {
+        $permisos = $user->roles->flatMap(function (Rol $rol) {
             return $rol->permisos;
         })->pluck('slug')->unique();
 
