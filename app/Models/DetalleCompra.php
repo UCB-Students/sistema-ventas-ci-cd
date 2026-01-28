@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read Compra $compra Relación con compra
  * @property-read Producto $producto Relación con producto
  * @property-read float $precio_base Precio base sin descuento
+ * @property-read float $total
  */
 class DetalleCompra extends Model
 {
@@ -74,6 +75,7 @@ class DetalleCompra extends Model
      */
     protected $appends = [
         'precio_base',
+        'total',
     ];
 
     /*
@@ -110,6 +112,14 @@ class DetalleCompra extends Model
     public function getPrecioBaseAttribute(): float
     {
         return round($this->cantidad * $this->precio_unitario, 2);
+    }
+
+    /**
+     * Total del detalle de compra (asumiendo que es el subtotal por ahora)
+     */
+    public function getTotalAttribute(): float
+    {
+        return $this->subtotal;
     }
 
     /*
