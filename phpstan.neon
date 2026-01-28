@@ -1,0 +1,10 @@
+# phpstan.neon
+parameters:
+    paths:
+        - app/
+        - database/
+    level: 5 # Nivel de análisis (0-9)
+    excludePaths:
+        - %rootDir%/app/Http/Middleware/*
+includes:
+    - vendor/larastan/larastan/extension.neon
