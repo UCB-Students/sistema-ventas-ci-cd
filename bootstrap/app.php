@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         // Headers de Seguridad Globales
         $middleware->append(App\Http\Middleware\SecurityHeadersMiddleware::class);
+        $middleware->append(App\Http\Middleware\AddLogContext::class);
 
         // Alias para Route Middleware
         $middleware->alias([
