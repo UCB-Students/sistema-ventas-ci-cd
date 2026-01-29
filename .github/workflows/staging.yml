@@ -26,9 +26,9 @@ jobs:
           
           # 4. Ajustar Permisos (ESTE ES EL PUNTO CLAVE)
           # Cambiamos el grupo a www-data y damos permisos de escritura a storage y cache
-          sudo chown -R fellsing:www-data $RELEASE_PATH
-          sudo chmod -R 775 $RELEASE_PATH/storage
-          sudo chmod -R 775 $RELEASE_PATH/bootstrap/cache
+          chown -R fellsing:www-data $RELEASE_PATH
+          chmod -R 775 $RELEASE_PATH/storage
+          chmod -R 775 $RELEASE_PATH/bootstrap/cache
           
           # 5. Optimización de Laravel
           cd $RELEASE_PATH
