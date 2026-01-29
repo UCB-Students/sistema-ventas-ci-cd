@@ -43,7 +43,7 @@ jobs:
         run: |
           # Damos 5 segundos para que PHP-FPM reconozca el nuevo release
           sleep 5
-          curl -f http://192.168.1.35:9090/api/health_fake
+          curl -f http://192.168.1.35:9090/api/health
 
       - name: Rollback en caso de fallo
         if: failure()
