@@ -34,6 +34,7 @@ jobs:
           cd $RELEASE_PATH
           php artisan optimize:clear
           php artisan migrate --force
+          logger -t "CI-CD-STAGING" "RELEASE=${{ github.sha }} ENV=STAGING USER=${{ github.actor }}"
           
           # 6. Actualizar enlace simbólico (Poner en vivo)
           ln -sfn $RELEASE_PATH /var/www/sistemaventas-staging/current
