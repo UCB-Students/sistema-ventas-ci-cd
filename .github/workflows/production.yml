@@ -14,32 +14,30 @@ jobs:
 
       - name: Despliegue Atómico Producción
         run: |
-          # 1. Definir rutas y carpetas
+          # 1. Definir rutas
           RELEASE_PATH=/var/www/sistemaventas-prod/releases/${{ github.sha }}
           mkdir -p $RELEASE_PATH
           tar -xzf release.tar.gz -C $RELEASE_PATH
           
-          # 2. Configuración compartida
+          # 2. Enlace al .env (aquí estaba el error del chown)
           ln -sfn /var/www/sistemaventas-prod/shared/.env $RELEASE_PATH/.env
           
-          # 3. FIX DE PERMISOS (Punto A)
-          chown -R fellsing:www-data $RELEASE_PATH
+          # 3. Permisos de escritura (Solo chmod, que es seguro para el pipeline)
           chmod -R 775 $RELEASE_PATH/storage
           chmod -R 775 $RELEASE_PATH/bootstrap/cache
           
-          # 4. Preparación de Laravel
+          # 4. Laravel y Observabilidad (Punto D)
           cd $RELEASE_PATH
           php artisan optimize:clear
           php artisan migrate --force
+          logger -t "CI-CD-PROD" "DEPLOY_SUCCESS RELEASE=${{ github.sha }} USER=${{ github.actor }}"
           
-          # 5. Trazabilidad y Logs (Punto D)
-          logger -t "CI-CD-PROD" "RELEASE=${{ github.sha }} STATUS=DEPLOYING USER=${{ github.actor }}"
-          
-          # 6. Puesta en vivo
+          # 5. Activación del release
           ln -sfn $RELEASE_PATH /var/www/sistemaventas-prod/current
 
-      - name: Health Check (Asegúrate de usar el puerto de PROD)
+      - name: Health Check Final
         run: |
-          sleep 5
-          # Cambia el puerto si producción usa uno distinto al 9090
-          curl -f http://192.168.1.35:8080/api/health
+          echo "Esperando a que los servicios se estabilicen..."
+          sleep 10
+          # Usamos -f para que falle el pipeline si no da 200, pero -s para no llenar el log de basura
+          curl -f -s http://192.168.1.35:9090/api/health || (echo "El Health Check falló. Revisa logs de PHP-FPM" && exit 1)
