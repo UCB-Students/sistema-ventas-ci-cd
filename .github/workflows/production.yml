@@ -41,3 +41,18 @@ jobs:
           sleep 10
           # Usamos -f para que falle el pipeline si no da 200, pero -s para no llenar el log de basura
           curl -f -s http://192.168.1.35:9090/api/health || (echo "El Health Check falló. Revisa logs de PHP-FPM" && exit 1)
+
+      - name: Rollback en caso de fallo
+        if: failure()
+        run: |
+          echo "¡El despliegue falló! Iniciando Rollback..."
+          # Buscamos el release anterior (el penúltimo en la lista ordenada por fecha)
+          PREV_RELEASE=$(ls -1dt /var/www/sistemaventas-prod/releases/*/ | sed -n '2p' | sed 's/\/$//')
+          
+          if [ -n "$PREV_RELEASE" ]; then
+            echo "Restaurando release anterior: $PREV_RELEASE"
+            ln -sfn $PREV_RELEASE /var/www/sistemaventas-prod/current
+            echo "Rollback completado exitosamente."
+          else
+            echo "No se encontró un release anterior para restaurar."
+          fi
