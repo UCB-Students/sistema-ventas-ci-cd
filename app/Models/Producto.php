@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
+use Database\Factories\ProductoFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Database\Factories\ProductoFactory;
 
 /**
  * @property \App\Models\Categoria $categoria
@@ -58,7 +58,7 @@ class Producto extends Model
 
     // Scope para productos activos
     /**
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeActivos(Builder $query): Builder
@@ -68,7 +68,7 @@ class Producto extends Model
 
     // Scope para productos inactivos
     /**
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeInactivos(Builder $query): Builder
@@ -78,7 +78,7 @@ class Producto extends Model
 
     // Scope para productos con stock bajo
     /**
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeStockBajo(Builder $query): Builder

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\CategoriaFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,7 +10,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Categoria extends Model
 {
-    use HasFactory; /** @phpstan-ignore-line */
+    /** @use HasFactory<CategoriaFactory> */
+    use HasFactory;
 
     protected $table = 'categorias';
 
@@ -26,7 +28,7 @@ class Categoria extends Model
     ];
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeActivas(Builder $query): Builder
@@ -35,7 +37,7 @@ class Categoria extends Model
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeInactivas(Builder $query): Builder

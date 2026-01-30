@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
+use Database\Factories\PersonaFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Database\Factories\PersonaFactory;
 
 /**
  * Modelo Persona
@@ -157,7 +157,7 @@ class Persona extends Model
      *
      * Uso: Persona::activas()->get()
      *
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeActivas(Builder $query): Builder
@@ -170,7 +170,7 @@ class Persona extends Model
      *
      * Uso: Persona::porTipoDocumento('DNI')->get()
      *
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopePorTipoDocumento(Builder $query, string $tipo): Builder
@@ -183,7 +183,7 @@ class Persona extends Model
      *
      * Uso: Persona::porNumeroDocumento('12345678')->first()
      *
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopePorNumeroDocumento(Builder $query, string $numero): Builder

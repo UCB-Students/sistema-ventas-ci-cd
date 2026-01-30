@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
+use Database\Factories\PermisoFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Database\Factories\PermisoFactory;
 
 /**
  * Modelo Permiso
@@ -77,7 +77,7 @@ class Permiso extends Model
     */
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopePorModulo(Builder $query, string $modulo): Builder

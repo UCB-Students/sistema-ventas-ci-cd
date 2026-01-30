@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
+use Database\Factories\RolFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
-use Database\Factories\RolFactory;
 
 /**
  * Modelo Rol
@@ -79,7 +79,7 @@ class Rol extends Model
     */
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeActivos(Builder $query): Builder
@@ -88,7 +88,7 @@ class Rol extends Model
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeInactivos(Builder $query): Builder
@@ -143,7 +143,7 @@ class Rol extends Model
     /**
      * Asigna permisos al rol (reemplaza los existentes)
      *
-     * @param list<int> $permisoIds
+     * @param  list<int>  $permisoIds
      */
     public function asignarPermisos(array $permisoIds): void
     {
@@ -153,7 +153,7 @@ class Rol extends Model
     /**
      * Agrega permisos al rol (sin reemplazar)
      *
-     * @param list<int> $permisoIds
+     * @param  list<int>  $permisoIds
      */
     public function agregarPermisos(array $permisoIds): void
     {

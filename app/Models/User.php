@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -9,7 +10,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 use Laravel\Sanctum\HasApiTokens;
-use Database\Factories\UserFactory;
 
 /**
  * Modelo User
@@ -68,7 +68,7 @@ class User extends Authenticatable
     */
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeActivos(Builder $query): Builder
@@ -77,7 +77,7 @@ class User extends Authenticatable
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeInactivos(Builder $query): Builder
@@ -113,7 +113,7 @@ class User extends Authenticatable
     /**
      * Asigna roles al usuario (reemplaza los existentes)
      *
-     * @param list<int> $rolIds
+     * @param  list<int>  $rolIds
      */
     public function asignarRoles(array $rolIds): void
     {
@@ -123,7 +123,7 @@ class User extends Authenticatable
     /**
      * Agrega roles al usuario (sin reemplazar)
      *
-     * @param list<int> $rolIds
+     * @param  list<int>  $rolIds
      */
     public function agregarRoles(array $rolIds): void
     {
@@ -176,7 +176,7 @@ class User extends Authenticatable
     /**
      * Verifica si el usuario tiene alguno de los permisos indicados
      *
-     * @param list<string> $codigosPermisos
+     * @param  list<string>  $codigosPermisos
      */
     public function tieneAlgunPermiso(array $codigosPermisos): bool
     {
@@ -190,7 +190,7 @@ class User extends Authenticatable
     /**
      * Verifica si el usuario tiene todos los permisos indicados
      *
-     * @param list<string> $codigosPermisos
+     * @param  list<string>  $codigosPermisos
      */
     public function tieneTodosLosPermisos(array $codigosPermisos): bool
     {

@@ -7,9 +7,9 @@ use App\Models\Rol;
 use App\Services\AuditLogger;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Collection;
 
 class AuthController extends Controller
 {
@@ -53,7 +53,7 @@ class AuthController extends Controller
             // Obtener roles y permisos para el frontend
             $roles = $user->roles->pluck('nombre');
             /** @phpstan-ignore-next-line */
-            $permisos = $user->roles->flatMap(function (Rol $rol): Collection{
+            $permisos = $user->roles->flatMap(function (Rol $rol): Collection {
                 return $rol->permisos;
             })->pluck('slug')->unique();
 

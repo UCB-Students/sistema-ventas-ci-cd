@@ -24,7 +24,7 @@ class AuditLogger
             $fecha = now()->format('Y-m-d H:i:s');
 
             // Construir mensaje multilínea
-            $mensaje = "\n[".$fecha."]";
+            $mensaje = "\n[".$fecha.']';
             $mensaje .= "\nTIPO: ".strtoupper($tipo);
             $mensaje .= "\nNIVEL: ".$nivel;
             $mensaje .= "\nDESCRIPCIÓN: ".$descripcion;

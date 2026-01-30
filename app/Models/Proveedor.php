@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\ProveedorFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Database\Factories\ProveedorFactory;
 
 /**
  * Modelo Proveedor
@@ -240,7 +240,7 @@ class Proveedor extends Model
      *
      * Uso: Proveedor::activos()->get()
      *
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeActivos(Builder $query): Builder
@@ -253,7 +253,7 @@ class Proveedor extends Model
      *
      * Uso: Proveedor::porTipo('Producto')->get()
      *
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopePorTipo(Builder $query, string $tipo): Builder
@@ -266,7 +266,7 @@ class Proveedor extends Model
      *
      * Uso: Proveedor::porCalificacion(int $calificacion): Builder<Proveedor>
      *
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopePorCalificacion(Builder $query, int $calificacion): Builder
@@ -279,7 +279,7 @@ class Proveedor extends Model
      *
      * Uso: Proveedor::porRubro('Tecnología')->get()
      *
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopePorRubro(Builder $query, string $rubro): Builder
@@ -293,7 +293,7 @@ class Proveedor extends Model
      * Filtra proveedores que nos otorgan crédito y aún tenemos saldo disponible
      * Uso: Proveedor::conCredito()->get()
      *
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeConCredito(Builder $query): Builder
@@ -307,7 +307,7 @@ class Proveedor extends Model
      *
      * Uso: Proveedor::mejorCalificados()->get()
      *
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeMejorCalificados(Builder $query): Builder
@@ -321,7 +321,7 @@ class Proveedor extends Model
      * Optimiza consultas con eager loading
      * Uso: Proveedor::conPersona()->get()
      *
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeConPersona(Builder $query): Builder
@@ -489,8 +489,6 @@ class Proveedor extends Model
      * Actualiza la fecha de última compra
      *
      * Debe llamarse cada vez que se confirma una orden de compra
-     *
-     * @param \Illuminate\Support\Carbon|string|null $fecha
      */
     public function actualizarUltimaCompra(\Illuminate\Support\Carbon|string|null $fecha = null): bool
     {

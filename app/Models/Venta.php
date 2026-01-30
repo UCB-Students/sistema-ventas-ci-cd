@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
+use Database\Factories\VentaFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
-use Database\Factories\VentaFactory;
 
 /**
  * Modelo Venta
@@ -146,7 +146,7 @@ class Venta extends Model
     */
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopePendientes(Builder $query): Builder
@@ -155,7 +155,7 @@ class Venta extends Model
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeCompletadas(Builder $query): Builder
@@ -164,7 +164,7 @@ class Venta extends Model
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeAnuladas(Builder $query): Builder
@@ -173,7 +173,7 @@ class Venta extends Model
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopePorCliente(Builder $query, int $clienteId): Builder
@@ -182,7 +182,7 @@ class Venta extends Model
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeEntreFechas(Builder $query, string $desde, string $hasta): Builder
@@ -191,7 +191,7 @@ class Venta extends Model
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeConRelaciones(Builder $query): Builder

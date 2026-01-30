@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\ClienteFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,8 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Database\Factories\ClienteFactory;
-
 
 /**
  * Modelo Cliente
@@ -175,7 +174,7 @@ class Cliente extends Model
      *
      * Uso: Cliente::activos()->get()
      *
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeActivos(Builder $query): Builder
@@ -188,7 +187,7 @@ class Cliente extends Model
      *
      * Uso: Cliente::vip()->get()
      *
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeVip(Builder $query): Builder
@@ -201,7 +200,7 @@ class Cliente extends Model
      *
      * Uso: Cliente::porTipo('Mayorista')->get()
      *
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopePorTipo(Builder $query, string $tipo): Builder
@@ -215,7 +214,7 @@ class Cliente extends Model
      * Filtra clientes que tienen límite de crédito y aún tienen saldo disponible
      * Uso: Cliente::conCredito()->get()
      *
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeConCredito(Builder $query): Builder
@@ -229,7 +228,7 @@ class Cliente extends Model
      *
      * Uso: Cliente::conPersona()->get()
      *
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeConPersona(Builder $query): Builder
@@ -378,7 +377,7 @@ class Cliente extends Model
      *
      * Debe llamarse cada vez que se confirma una venta
      *
-     * @param \Illuminate\Support\Carbon|string|null $fecha
+     * @param  \Illuminate\Support\Carbon|string|null  $fecha
      */
     public function actualizarUltimaCompra($fecha = null): bool
     {

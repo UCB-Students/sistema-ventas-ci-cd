@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
+use Database\Factories\CompraFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
-use Database\Factories\CompraFactory;
 
 /**
  * Modelo Compra
@@ -190,7 +190,7 @@ class Compra extends Model
      *
      * Uso: Compra::pendientes()->get()
      *
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopePendientes(Builder $query): Builder
@@ -203,7 +203,7 @@ class Compra extends Model
      *
      * Uso: Compra::completadas()->get()
      *
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeCompletadas(Builder $query): Builder
@@ -216,7 +216,7 @@ class Compra extends Model
      *
      * Uso: Compra::anuladas()->get()
      *
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeAnuladas(Builder $query): Builder
@@ -227,7 +227,7 @@ class Compra extends Model
     /**
      * Scope para filtrar por proveedor
      *
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopePorProveedor(Builder $query, int $proveedorId): Builder
@@ -238,7 +238,7 @@ class Compra extends Model
     /**
      * Scope para filtrar por rango de fechas
      *
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeEntreFechas(Builder $query, string $desde, string $hasta): Builder
@@ -249,7 +249,7 @@ class Compra extends Model
     /**
      * Scope para incluir relaciones comunes
      *
-     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
      * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeConRelaciones(Builder $query): Builder
