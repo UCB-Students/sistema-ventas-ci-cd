@@ -20,22 +20,19 @@ jobs:
           
           # 2. Descomprimir
           tar -xzf release.tar.gz -C $RELEASE_PATH
-          cp /var/www/sistemaventas-staging/shared/.env $RELEASE_PATH/.env
-
-          
           # 2. Copiar configuración base
           cp /var/www/sistemaventas-staging/shared/.env $RELEASE_PATH/.env
           
-          # 3. Sobrescribir variables específicas con Secretos (usando sed para no duplicar)
-          # Función auxiliar para reemplazar o agregar
+          # 3. Sobrescribir variables específicas con Secretos (Seguro para caracteres especiales)
           function set_env() {
               key=$1
               val=$2
+              # Borrar la línea si existe (más seguro que reemplazar con sed si val tiene caracteres raros)
               if grep -q "^$key=" $RELEASE_PATH/.env; then
-                  sed -i "s|^$key=.*|$key=$val|g" $RELEASE_PATH/.env
-              else
-                  echo "$key=$val" >> $RELEASE_PATH/.env
+                  sed -i "/^$key=/d" $RELEASE_PATH/.env
               fi
+              # Agregar al final
+              echo "$key=$val" >> $RELEASE_PATH/.env
           }
 
           set_env "APP_ENV" "staging"
