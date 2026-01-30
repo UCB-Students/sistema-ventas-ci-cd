@@ -89,7 +89,7 @@ class Cliente extends Model
      *
      * @var array<string, string>
      */
-    protected $casts = [
+                protected $casts = [
         'limite_credito' => 'decimal:2',       // Formato decimal con 2 decimales
         'credito_usado' => 'decimal:2',        // Formato decimal con 2 decimales
         'dias_credito' => 'integer',           // Número entero de días
