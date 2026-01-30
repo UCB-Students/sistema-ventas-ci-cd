@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\PermisoFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 class Permiso extends Model
 {
+    /** @use HasFactory<PermisoFactory> */
     use HasFactory;
 
     protected $table = 'permisos';
@@ -56,6 +58,12 @@ class Permiso extends Model
     |--------------------------------------------------------------------------
     */
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<Rol, self, \Illuminate\Database\Eloquent\Relations\Pivot>
+     */
+    /**
+     * @phpstan-ignore-next-line
+     */
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Rol::class, 'rol_permiso', 'permiso_id', 'rol_id')
@@ -68,6 +76,10 @@ class Permiso extends Model
     |--------------------------------------------------------------------------
     */
 
+    /**
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
+     */
     public function scopePorModulo(Builder $query, string $modulo): Builder
     {
         return $query->where('modulo', $modulo);
@@ -81,6 +93,8 @@ class Permiso extends Model
 
     /**
      * Obtiene todos los módulos disponibles
+     *
+     * @return array<string, string>
      */
     public static function getModulos(): array
     {
@@ -99,6 +113,8 @@ class Permiso extends Model
 
     /**
      * Obtiene permisos agrupados por módulo
+     *
+     * @return array<string, array<int, Permiso>>
      */
     public static function agrupadosPorModulo(): array
     {

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\CompraFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -39,14 +40,16 @@ use Illuminate\Support\Facades\DB;
  * @property-read bool $es_credito Si la compra es a crédito
  * @property-read bool $puede_editarse Si la compra puede modificarse
  *
- * @method static Builder pendientes() Scope para compras pendientes
- * @method static Builder completadas() Scope para compras completadas
- * @method static Builder anuladas() Scope para compras anuladas
- * @method static Builder porProveedor(int $proveedorId) Scope para filtrar por proveedor
- * @method static Builder entreFechas(string $desde, string $hasta) Scope para filtrar por rango de fechas
+ * @method static \Illuminate\Database\Eloquent\Builder<static> pendientes() Scope para compras pendientes
+ * @method static \Illuminate\Database\Eloquent\Builder<static> completadas() Scope para compras completadas
+ * @method static \Illuminate\Database\Eloquent\Builder<static> anuladas() Scope para compras anuladas
+ * @method static \Illuminate\Database\Eloquent\Builder<static> porProveedor(int $proveedorId) Scope para filtrar por proveedor
+ * @method static \Illuminate\Database\Eloquent\Builder<static> entreFechas(string $desde, string $hasta) Scope para filtrar por rango de fechas
+ * @method static \Illuminate\Database\Eloquent\Builder<static> conRelaciones() Scope para incluir relaciones comunes
  */
 class Compra extends Model
 {
+    /** @use HasFactory<CompraFactory> */
     use HasFactory;
 
     /**
@@ -59,7 +62,7 @@ class Compra extends Model
     /**
      * Atributos asignables en masa
      *
-     * @var array<string>
+     * @var list<string>
      */
     protected $fillable = [
         'proveedor_id',
@@ -104,7 +107,7 @@ class Compra extends Model
     /**
      * Atributos computados agregados a JSON/array
      *
-     * @var array<string>
+     * @var list<string>
      */
     protected $appends = [
         'cantidad_items',
@@ -152,6 +155,11 @@ class Compra extends Model
 
     /**
      * Relación con Proveedor
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Proveedor, self>
+     */
+    /**
+     * @phpstan-ignore-next-line
      */
     public function proveedor(): BelongsTo
     {
@@ -160,6 +168,11 @@ class Compra extends Model
 
     /**
      * Relación con DetalleCompra
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<DetalleCompra, self>
+     */
+    /**
+     * @phpstan-ignore-next-line
      */
     public function detalles(): HasMany
     {
@@ -174,6 +187,11 @@ class Compra extends Model
 
     /**
      * Scope para compras pendientes
+     *
+     * Uso: Compra::pendientes()->get()
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopePendientes(Builder $query): Builder
     {
@@ -182,6 +200,11 @@ class Compra extends Model
 
     /**
      * Scope para compras completadas
+     *
+     * Uso: Compra::completadas()->get()
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeCompletadas(Builder $query): Builder
     {
@@ -190,6 +213,11 @@ class Compra extends Model
 
     /**
      * Scope para compras anuladas
+     *
+     * Uso: Compra::anuladas()->get()
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeAnuladas(Builder $query): Builder
     {
@@ -198,6 +226,9 @@ class Compra extends Model
 
     /**
      * Scope para filtrar por proveedor
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopePorProveedor(Builder $query, int $proveedorId): Builder
     {
@@ -206,6 +237,9 @@ class Compra extends Model
 
     /**
      * Scope para filtrar por rango de fechas
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeEntreFechas(Builder $query, string $desde, string $hasta): Builder
     {
@@ -214,6 +248,9 @@ class Compra extends Model
 
     /**
      * Scope para incluir relaciones comunes
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeConRelaciones(Builder $query): Builder
     {
@@ -267,7 +304,7 @@ class Compra extends Model
             $ultimo = self::lockForUpdate()->orderBy('id', 'desc')->first();
             $numero = $ultimo ? (int) substr($ultimo->codigo, strlen(self::CODIGO_PREFIJO)) + 1 : 1;
 
-            return self::CODIGO_PREFIJO.str_pad($numero, 6, '0', STR_PAD_LEFT);
+            return self::CODIGO_PREFIJO.str_pad((string) $numero, 6, '0', STR_PAD_LEFT);
         });
     }
 
@@ -406,6 +443,6 @@ class Compra extends Model
             return null;
         }
 
-        return now()->diffInDays($this->fecha_vencimiento, false);
+        return (int) now()->diffInDays($this->fecha_vencimiento, false);
     }
 }

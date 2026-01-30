@@ -9,6 +9,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 /**
  * Controlador API para generación de Reportes
@@ -49,7 +50,7 @@ class ReporteController extends Controller
     /**
      * Reporte de ventas
      */
-    public function ventasPdf(Request $request)
+    public function ventasPdf(Request $request): Response|JsonResponse
     {
         try {
             $filtros = [
@@ -79,7 +80,7 @@ class ReporteController extends Controller
     /**
      * Reporte de compras
      */
-    public function comprasPdf(Request $request)
+    public function comprasPdf(Request $request): Response|JsonResponse
     {
         try {
             $filtros = [
@@ -109,7 +110,7 @@ class ReporteController extends Controller
     /**
      * Reporte de inventario/productos
      */
-    public function inventarioPdf(Request $request)
+    public function inventarioPdf(Request $request): Response|JsonResponse
     {
         try {
             $filtros = [
@@ -138,7 +139,7 @@ class ReporteController extends Controller
     /**
      * Reporte de clientes
      */
-    public function clientesPdf(Request $request)
+    public function clientesPdf(Request $request): Response|JsonResponse
     {
         try {
             $filtros = [
@@ -166,7 +167,7 @@ class ReporteController extends Controller
     /**
      * Reporte de proveedores
      */
-    public function proveedoresPdf(Request $request)
+    public function proveedoresPdf(Request $request): Response|JsonResponse
     {
         try {
             $filtros = [
@@ -194,7 +195,7 @@ class ReporteController extends Controller
     /**
      * Reporte de ganancias/resumen financiero
      */
-    public function finanzasPdf(Request $request)
+    public function finanzasPdf(Request $request): Response|JsonResponse
     {
         try {
             $filtros = [

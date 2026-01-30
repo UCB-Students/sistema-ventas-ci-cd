@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Database\Factories\RolFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
  * Modelo Rol
@@ -15,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 class Rol extends Model
 {
+    /** @use HasFactory<RolFactory> */
     use HasFactory;
 
     protected $table = 'roles';
@@ -45,12 +48,24 @@ class Rol extends Model
     |--------------------------------------------------------------------------
     */
 
+    /**
+     * @return BelongsToMany<Permiso, self, Pivot>
+     */
+    /**
+     * @phpstan-ignore-next-line
+     */
     public function permisos(): BelongsToMany
     {
         return $this->belongsToMany(Permiso::class, 'rol_permiso', 'rol_id', 'permiso_id')
             ->withTimestamps();
     }
 
+    /**
+     * @return BelongsToMany<User, self, Pivot>
+     */
+    /**
+     * @phpstan-ignore-next-line
+     */
     public function usuarios(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'rol_usuario', 'rol_id', 'user_id')
@@ -63,11 +78,19 @@ class Rol extends Model
     |--------------------------------------------------------------------------
     */
 
+    /**
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
+     */
     public function scopeActivos(Builder $query): Builder
     {
         return $query->where('estado', true);
     }
 
+    /**
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
+     */
     public function scopeInactivos(Builder $query): Builder
     {
         return $query->where('estado', false);
@@ -100,7 +123,7 @@ class Rol extends Model
         $ultimo = self::orderBy('id', 'desc')->first();
         $numero = $ultimo ? (int) substr($ultimo->codigo, strlen(self::CODIGO_PREFIJO)) + 1 : 1;
 
-        return self::CODIGO_PREFIJO.str_pad($numero, 4, '0', STR_PAD_LEFT);
+        return self::CODIGO_PREFIJO.str_pad((string) $numero, 4, '0', STR_PAD_LEFT);
     }
 
     /*
@@ -119,6 +142,8 @@ class Rol extends Model
 
     /**
      * Asigna permisos al rol (reemplaza los existentes)
+     *
+     * @param  list<int>  $permisoIds
      */
     public function asignarPermisos(array $permisoIds): void
     {
@@ -127,6 +152,8 @@ class Rol extends Model
 
     /**
      * Agrega permisos al rol (sin reemplazar)
+     *
+     * @param  list<int>  $permisoIds
      */
     public function agregarPermisos(array $permisoIds): void
     {

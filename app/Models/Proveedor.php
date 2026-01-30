@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Database\Factories\ProveedorFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -55,15 +57,17 @@ use Illuminate\Support\Facades\DB;
  * @property-read Persona $persona Relación con persona
  * @property-read int $cantidad_compras
  *
- * @method static Builder activos() Scope para filtrar proveedores activos
- * @method static Builder porTipo(string $tipo) Scope para filtrar por tipo de proveedor
- * @method static Builder porCalificacion(int $calificacion) Scope para filtrar por calificación
- * @method static Builder porRubro(string $rubro) Scope para filtrar por rubro
- * @method static Builder conCredito() Scope para proveedores con crédito disponible
- * @method static Builder mejorCalificados() Scope para proveedores con calificación >= 4
+ * @method static \Illuminate\Database\Eloquent\Builder<static> activos() Scope para filtrar proveedores activos
+ * @method static \Illuminate\Database\Eloquent\Builder<static> porTipo(string $tipo) Scope para filtrar por tipo de proveedor
+ * @method static \Illuminate\Database\Eloquent\Builder<static> porCalificacion(int $calificacion) Scope para filtrar por calificación
+ * @method static \Illuminate\Database\Eloquent\Builder<static> porRubro(string $rubro) Scope para filtrar por rubro
+ * @method static \Illuminate\Database\Eloquent\Builder<static> conCredito() Scope para proveedores con crédito disponible
+ * @method static \Illuminate\Database\Eloquent\Builder<static> mejorCalificados() Scope para proveedores con calificación >= 4
+ * @method static \Illuminate\Database\Eloquent\Builder<static> conPersona()
  */
 class Proveedor extends Model
 {
+    /** @use HasFactory<ProveedorFactory> */
     use HasFactory, SoftDeletes;
 
     /**
@@ -81,7 +85,7 @@ class Proveedor extends Model
      * No incluye campos de auditoría (created_by, updated_by, deleted_by)
      * ya que se manejan mediante observadores o middleware.
      *
-     * @var array<string>
+     * @var list<string>
      */
     protected $fillable = [
         'persona_id',          // ID de la persona asociada
@@ -139,7 +143,7 @@ class Proveedor extends Model
      * IMPORTANTE: Puede afectar rendimiento en consultas masivas.
      * Considerar usar solo cuando sea necesario en APIs.
      *
-     * @var array<string>
+     * @var list<string>
      */
     protected $appends = [
         'credito_disponible',          // Crédito disponible calculado
@@ -201,6 +205,11 @@ class Proveedor extends Model
      *
      * Un proveedor pertenece a una persona.
      * Permite acceder a los datos personales (nombre, documento, contacto, etc.)
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Persona, self>
+     */
+    /**
+     * @phpstan-ignore-next-line
      */
     public function persona(): BelongsTo
     {
@@ -230,6 +239,9 @@ class Proveedor extends Model
      * Scope para filtrar solo proveedores activos
      *
      * Uso: Proveedor::activos()->get()
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeActivos(Builder $query): Builder
     {
@@ -240,6 +252,9 @@ class Proveedor extends Model
      * Scope para filtrar por tipo de proveedor
      *
      * Uso: Proveedor::porTipo('Producto')->get()
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopePorTipo(Builder $query, string $tipo): Builder
     {
@@ -249,7 +264,10 @@ class Proveedor extends Model
     /**
      * Scope para filtrar por calificación
      *
-     * Uso: Proveedor::porCalificacion(5)->get()
+     * Uso: Proveedor::porCalificacion(int $calificacion): Builder<Proveedor>
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopePorCalificacion(Builder $query, int $calificacion): Builder
     {
@@ -260,6 +278,9 @@ class Proveedor extends Model
      * Scope para filtrar por rubro/industria
      *
      * Uso: Proveedor::porRubro('Tecnología')->get()
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopePorRubro(Builder $query, string $rubro): Builder
     {
@@ -271,6 +292,9 @@ class Proveedor extends Model
      *
      * Filtra proveedores que nos otorgan crédito y aún tenemos saldo disponible
      * Uso: Proveedor::conCredito()->get()
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeConCredito(Builder $query): Builder
     {
@@ -282,6 +306,9 @@ class Proveedor extends Model
      * Scope para proveedores mejor calificados (4 o 5 estrellas)
      *
      * Uso: Proveedor::mejorCalificados()->get()
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeMejorCalificados(Builder $query): Builder
     {
@@ -293,6 +320,9 @@ class Proveedor extends Model
      *
      * Optimiza consultas con eager loading
      * Uso: Proveedor::conPersona()->get()
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder<static>  $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeConPersona(Builder $query): Builder
     {
@@ -378,7 +408,7 @@ class Proveedor extends Model
             $numero = $ultimo ? (int) substr($ultimo->codigo, \strlen(self::CODIGO_PREFIJO)) + 1 : 1;
 
             // Formatear código con padding de ceros (6 dígitos)
-            return self::CODIGO_PREFIJO.\str_pad($numero, 6, '0', STR_PAD_LEFT);
+            return self::CODIGO_PREFIJO.\str_pad((string) $numero, 6, '0', STR_PAD_LEFT);
         });
     }
 
@@ -459,12 +489,10 @@ class Proveedor extends Model
      * Actualiza la fecha de última compra
      *
      * Debe llamarse cada vez que se confirma una orden de compra
-     *
-     * @param  \Carbon\Carbon|string|null  $fecha  Fecha de la compra (default: hoy)
      */
-    public function actualizarUltimaCompra($fecha = null): bool
+    public function actualizarUltimaCompra(\Illuminate\Support\Carbon|string|null $fecha = null): bool
     {
-        $this->ultima_compra = $fecha ?? now();
+        $this->ultima_compra = $fecha ? Carbon::parse($fecha) : now();
 
         return $this->save();
     }

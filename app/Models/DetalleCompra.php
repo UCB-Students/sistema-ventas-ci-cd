@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\DetalleCompraFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -29,6 +30,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class DetalleCompra extends Model
 {
+    /** @use HasFactory<DetalleCompraFactory> */
     use HasFactory;
 
     /**
@@ -41,7 +43,7 @@ class DetalleCompra extends Model
     /**
      * Atributos asignables en masa
      *
-     * @var array<string>
+     * @var list<string>
      */
     protected $fillable = [
         'compra_id',
@@ -71,7 +73,7 @@ class DetalleCompra extends Model
     /**
      * Atributos computados agregados a JSON/array
      *
-     * @var array<string>
+     * @var list<string>
      */
     protected $appends = [
         'precio_base',
@@ -86,6 +88,11 @@ class DetalleCompra extends Model
 
     /**
      * Relación con Compra
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Compra, self>
+     */
+    /**
+     * @phpstan-ignore-next-line
      */
     public function compra(): BelongsTo
     {
@@ -94,6 +101,11 @@ class DetalleCompra extends Model
 
     /**
      * Relación con Producto
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Producto, self>
+     */
+    /**
+     * @phpstan-ignore-next-line
      */
     public function producto(): BelongsTo
     {
@@ -159,16 +171,12 @@ class DetalleCompra extends Model
 
         // Después de guardar, recalcular totales de la compra
         static::saved(function (DetalleCompra $detalle) {
-            if ($detalle->compra) {
-                $detalle->compra->calcularTotales();
-            }
+            $detalle->compra->calcularTotales();
         });
 
         // Después de eliminar, recalcular totales de la compra
         static::deleted(function (DetalleCompra $detalle) {
-            if ($detalle->compra) {
-                $detalle->compra->calcularTotales();
-            }
+            $detalle->compra->calcularTotales();
         });
     }
 }

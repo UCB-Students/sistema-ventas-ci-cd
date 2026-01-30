@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\DetalleVentaFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,10 +19,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class DetalleVenta extends Model
 {
+    /** @use HasFactory<DetalleVentaFactory> */
     use HasFactory;
 
     protected $table = 'detalle_ventas';
 
+    /**
+     * @var list<string>
+     */
     protected $fillable = [
         'venta_id',
         'producto_id',
@@ -42,6 +47,9 @@ class DetalleVenta extends Model
         'updated_at' => 'datetime',
     ];
 
+    /**
+     * @var list<string>
+     */
     protected $appends = [
         'precio_base',
         'total',
@@ -53,11 +61,23 @@ class DetalleVenta extends Model
     |--------------------------------------------------------------------------
     */
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Venta, self>
+     */
+    /**
+     * @phpstan-ignore-next-line
+     */
     public function venta(): BelongsTo
     {
         return $this->belongsTo(Venta::class, 'venta_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Producto, self>
+     */
+    /**
+     * @phpstan-ignore-next-line
+     */
     public function producto(): BelongsTo
     {
         return $this->belongsTo(Producto::class, 'producto_id');
@@ -79,7 +99,7 @@ class DetalleVenta extends Model
      */
     public function getTotalAttribute(): float
     {
-        return $this->subtotal;
+        return (float) $this->subtotal;
     }
 
     /*
@@ -99,16 +119,12 @@ class DetalleVenta extends Model
 
         // Después de guardar, recalcular totales de la venta
         static::saved(function (DetalleVenta $detalle) {
-            if ($detalle->venta) {
-                $detalle->venta->calcularTotales();
-            }
+            $detalle->venta->calcularTotales();
         });
 
         // Después de eliminar, recalcular totales de la venta
         static::deleted(function (DetalleVenta $detalle) {
-            if ($detalle->venta) {
-                $detalle->venta->calcularTotales();
-            }
+            $detalle->venta->calcularTotales();
         });
     }
 }

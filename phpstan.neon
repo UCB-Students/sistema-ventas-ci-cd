@@ -3,8 +3,9 @@ parameters:
     paths:
         - app/
         - database/
-    level: 2
+    level: 6
     excludePaths:
         - %rootDir%/app/Http/Middleware/*
+
 includes:
     - vendor/larastan/larastan/extension.neon

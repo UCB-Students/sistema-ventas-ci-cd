@@ -98,7 +98,7 @@ class ProductoController extends Controller
     /**
      * Mostrar un producto específico
      */
-    public function show($id): JsonResponse
+    public function show(string $id): JsonResponse
     {
         try {
             $producto = Producto::with('categoria')->find($id);
@@ -123,7 +123,7 @@ class ProductoController extends Controller
     /**
      * Actualizar producto
      */
-    public function update(UpdateProductoRequest $request, $id): JsonResponse
+    public function update(UpdateProductoRequest $request, string $id): JsonResponse
     {
         try {
             $producto = Producto::find($id);
@@ -173,7 +173,7 @@ class ProductoController extends Controller
     /**
      * Cambiar estado de producto
      */
-    public function toggleEstado($id): JsonResponse
+    public function toggleEstado(string $id): JsonResponse
     {
         try {
             $producto = Producto::find($id);
@@ -220,7 +220,7 @@ class ProductoController extends Controller
     /**
      * Eliminar producto (desactivar)
      */
-    public function destroy($id): JsonResponse
+    public function destroy(string $id): JsonResponse
     {
         try {
             $producto = Producto::find($id);
