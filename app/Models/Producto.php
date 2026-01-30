@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -42,31 +43,46 @@ class Producto extends Model
     protected $appends = ['margen_utilidad', 'tiene_stock_bajo'];
 
     // Relación con categoría
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Categoria, Producto>
+     */
     public function categoria(): BelongsTo
     {
         return $this->belongsTo(Categoria::class);
     }
 
     // Scope para productos activos
-    public function scopeActivos($query)
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
+     */
+    public function scopeActivos(Builder $query): Builder
     {
         return $query->where('estado', true);
     }
 
     // Scope para productos inactivos
-    public function scopeInactivos($query)
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
+     */
+    public function scopeInactivos(Builder $query): Builder
     {
         return $query->where('estado', false);
     }
 
     // Scope para productos con stock bajo
-    public function scopeStockBajo($query)
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
+     */
+    public function scopeStockBajo(Builder $query): Builder
     {
         return $query->whereColumn('stock', '<=', 'stock_minimo');
     }
 
     // Accessor para margen de utilidad
-    public function getMargenUtilidadAttribute()
+    public function getMargenUtilidadAttribute(): float
     {
         if ($this->precio_compra > 0) {
             return round((($this->precio_venta - $this->precio_compra) / $this->precio_compra) * 100, 2);
@@ -76,17 +92,17 @@ class Producto extends Model
     }
 
     // Accessor para verificar stock bajo
-    public function getTieneStockBajoAttribute()
+    public function getTieneStockBajoAttribute(): bool
     {
         return $this->stock <= $this->stock_minimo;
     }
 
     // Generar código automático
-    public static function generarCodigo()
+    public static function generarCodigo(): string
     {
         $ultimo = self::orderBy('id', 'desc')->first();
         $numero = $ultimo ? (int) substr($ultimo->codigo, 4) + 1 : 1;
 
-        return 'PROD'.str_pad($numero, 6, '0', STR_PAD_LEFT);
+        return 'PROD'.str_pad((string) $numero, 6, '0', STR_PAD_LEFT);
     }
 }

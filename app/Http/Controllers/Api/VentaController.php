@@ -338,7 +338,7 @@ class VentaController extends Controller
                 'id' => $p->id,
                 'codigo' => $p->codigo,
                 'nombre' => $p->nombre,
-                'categoria' => $p->categoria?->nombre,
+                'categoria' => $p->categoria->nombre,
                 'precio_venta' => $p->precio_venta,
                 'stock' => $p->stock,
                 'unidad_medida' => $p->unidad_medida,

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Rol;
 use App\Services\AuditLogger;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -14,7 +15,7 @@ class AuthController extends Controller
     /**
      * Iniciar sesión
      */
-    public function login(Request $request)
+    public function login(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
@@ -50,7 +51,7 @@ class AuthController extends Controller
 
             // Obtener roles y permisos para el frontend
             $roles = $user->roles->pluck('nombre');
-            $permisos = $user->roles->flatMap(function (Rol $rol) {
+            $permisos = $user->roles->flatMap(function (Rol $rol): \Illuminate\Database\Eloquent\Collection {
                 return $rol->permisos;
             })->pluck('slug')->unique();
 
@@ -82,7 +83,7 @@ class AuthController extends Controller
     /**
      * Cerrar sesión
      */
-    public function logout(Request $request)
+    public function logout(Request $request): JsonResponse
     {
         $user = $request->user();
         if ($user) {
@@ -99,11 +100,11 @@ class AuthController extends Controller
     /**
      * Obtener usuario autenticado
      */
-    public function user(Request $request)
+    public function user(Request $request): JsonResponse
     {
         $user = $request->user();
         $roles = $user->roles->pluck('nombre');
-        $permisos = $user->roles->flatMap(function (Rol $rol) {
+        $permisos = $user->roles->flatMap(function (Rol $rol): \Illuminate\Database\Eloquent\Collection {
             return $rol->permisos;
         })->pluck('slug')->unique();
 

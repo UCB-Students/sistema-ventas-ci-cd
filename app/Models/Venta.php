@@ -33,6 +33,13 @@ use Illuminate\Support\Facades\DB;
  * @property string|null $observaciones
  * @property-read Cliente $cliente Relación con cliente
  * @property-read \Illuminate\Database\Eloquent\Collection|DetalleVenta[] $detalles Detalles de la venta
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static> pendientes()
+ * @method static \Illuminate\Database\Eloquent\Builder<static> completadas()
+ * @method static \Illuminate\Database\Eloquent\Builder<static> anuladas()
+ * @method static \Illuminate\Database\Eloquent\Builder<static> porCliente(int $clienteId)
+ * @method static \Illuminate\Database\Eloquent\Builder<static> entreFechas(string $desde, string $hasta)
+ * @method static \Illuminate\Database\Eloquent\Builder<static> conRelaciones()
  */
 class Venta extends Model
 {
@@ -108,11 +115,17 @@ class Venta extends Model
     |--------------------------------------------------------------------------
     */
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Cliente, Venta>
+     */
     public function cliente(): BelongsTo
     {
         return $this->belongsTo(Cliente::class, 'cliente_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<DetalleVenta, Venta>
+     */
     public function detalles(): HasMany
     {
         return $this->hasMany(DetalleVenta::class, 'venta_id');
@@ -124,31 +137,55 @@ class Venta extends Model
     |--------------------------------------------------------------------------
     */
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
+     */
     public function scopePendientes(Builder $query): Builder
     {
         return $query->where('estado', self::ESTADO_PENDIENTE);
     }
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
+     */
     public function scopeCompletadas(Builder $query): Builder
     {
         return $query->where('estado', self::ESTADO_COMPLETADA);
     }
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
+     */
     public function scopeAnuladas(Builder $query): Builder
     {
         return $query->where('estado', self::ESTADO_ANULADA);
     }
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
+     */
     public function scopePorCliente(Builder $query, int $clienteId): Builder
     {
         return $query->where('cliente_id', $clienteId);
     }
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
+     */
     public function scopeEntreFechas(Builder $query, string $desde, string $hasta): Builder
     {
         return $query->whereBetween('fecha_venta', [$desde, $hasta]);
     }
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
+     */
     public function scopeConRelaciones(Builder $query): Builder
     {
         return $query->with(['cliente.persona', 'detalles.producto']);
@@ -187,7 +224,7 @@ class Venta extends Model
             $ultimo = self::lockForUpdate()->orderBy('id', 'desc')->first();
             $numero = $ultimo ? (int) substr($ultimo->codigo, strlen(self::CODIGO_PREFIJO)) + 1 : 1;
 
-            return self::CODIGO_PREFIJO.str_pad($numero, 6, '0', STR_PAD_LEFT);
+            return self::CODIGO_PREFIJO.str_pad((string) $numero, 6, '0', STR_PAD_LEFT);
         });
     }
 
@@ -251,12 +288,8 @@ class Venta extends Model
             }
 
             // Actualizar datos del cliente (si el modelo tiene estos métodos)
-            if (method_exists($this->cliente, 'actualizarUltimaCompra')) {
-                $this->cliente->actualizarUltimaCompra($this->fecha_venta);
-            }
-            if (method_exists($this->cliente, 'incrementarTotalCompras')) {
-                $this->cliente->incrementarTotalCompras($this->total);
-            }
+            $this->cliente->actualizarUltimaCompra($this->fecha_venta);
+            $this->cliente->incrementarTotalCompras($this->total);
 
             $this->estado = self::ESTADO_COMPLETADA;
 
@@ -311,6 +344,6 @@ class Venta extends Model
             return null;
         }
 
-        return now()->diffInDays($this->fecha_vencimiento, false);
+        return (int) now()->diffInDays($this->fecha_vencimiento, false);
     }
 }

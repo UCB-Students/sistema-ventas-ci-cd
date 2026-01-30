@@ -332,7 +332,7 @@ class CompraController extends Controller
                 'id' => $p->id,
                 'codigo' => $p->codigo,
                 'nombre' => $p->nombre,
-                'categoria' => $p->categoria?->nombre,
+                'categoria' => $p->categoria->nombre,
                 'precio_compra' => $p->precio_compra,
                 'stock' => $p->stock,
                 'unidad_medida' => $p->unidad_medida,

@@ -19,7 +19,7 @@ class AddLogContext
         Log::withContext([
             'release' => config('app.version', 'unknown'),
             'env' => app()->environment(),
-            'user_id' => $request->user()?->id ?? 'guest',
+            'user_id' => $request->user() ? $request->user()->id : 'guest',
         ]);
 
         return $next($request);

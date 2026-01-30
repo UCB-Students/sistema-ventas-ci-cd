@@ -9,6 +9,7 @@ use App\Models\Producto;
 use App\Models\Proveedor;
 use App\Models\Venta;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -18,6 +19,8 @@ class ReporteService
 {
     /**
      * Obtener estadísticas del dashboard
+     *
+     * @return array<string, mixed>
      */
     public function getDashboardStats(): array
     {
@@ -141,6 +144,9 @@ class ReporteService
 
     /**
      * Reporte de ventas
+     *
+     * @param array<string, mixed> $filtros
+     * @return array<string, mixed>
      */
     public function getReporteVentas(array $filtros): array
     {
@@ -183,6 +189,9 @@ class ReporteService
 
     /**
      * Reporte de compras
+     *
+     * @param array<string, mixed> $filtros
+     * @return array<string, mixed>
      */
     public function getReporteCompras(array $filtros): array
     {
@@ -225,6 +234,9 @@ class ReporteService
 
     /**
      * Reporte de inventario
+     *
+     * @param array<string, mixed> $filtros
+     * @return array<string, mixed>
      */
     public function getReporteInventario(array $filtros): array
     {
@@ -263,6 +275,9 @@ class ReporteService
 
     /**
      * Reporte de clientes
+     *
+     * @param array<string, mixed> $filtros
+     * @return array<string, mixed>
      */
     public function getReporteClientes(array $filtros): array
     {
@@ -309,6 +324,9 @@ class ReporteService
 
     /**
      * Reporte de proveedores
+     *
+     * @param array<string, mixed> $filtros
+     * @return array<string, mixed>
      */
     public function getReporteProveedores(array $filtros): array
     {
@@ -355,6 +373,9 @@ class ReporteService
 
     /**
      * Reporte financiero
+     *
+     * @param array<string, mixed> $filtros
+     * @return array<string, mixed>
      */
     public function getReporteFinanzas(array $filtros): array
     {
@@ -419,6 +440,8 @@ class ReporteService
 
     /**
      * Obtener datos para filtros
+     *
+     * @return array<string, mixed>
      */
     public function getFiltrosData(): array
     {

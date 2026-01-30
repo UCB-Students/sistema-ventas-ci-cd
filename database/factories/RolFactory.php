@@ -6,6 +6,9 @@ use App\Models\Rol;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<Rol>
+ */
 class RolFactory extends Factory
 {
     /**

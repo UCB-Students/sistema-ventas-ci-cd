@@ -6,13 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Categoria;
 use App\Services\AuditLogger;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class CategoriaController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         try {
             $query = Categoria::query();
@@ -62,7 +63,7 @@ class CategoriaController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         try {
             // Validación
@@ -114,7 +115,7 @@ class CategoriaController extends Controller
         }
     }
 
-    public function show($id)
+    public function show(string $id): JsonResponse
     {
         try {
             $categoria = Categoria::find($id);
@@ -139,7 +140,7 @@ class CategoriaController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, string $id): JsonResponse
     {
         try {
             $categoria = Categoria::find($id);
@@ -199,7 +200,7 @@ class CategoriaController extends Controller
         }
     }
 
-    public function toggleEstado($id)
+    public function toggleEstado(string $id): JsonResponse
     {
         try {
             $categoria = Categoria::find($id);
@@ -238,7 +239,7 @@ class CategoriaController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy(string $id): JsonResponse
     {
         try {
             $categoria = Categoria::find($id);

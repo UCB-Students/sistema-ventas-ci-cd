@@ -22,6 +22,9 @@ class DetalleVenta extends Model
 
     protected $table = 'detalle_ventas';
 
+    /**
+     * @var list<string>
+     */
     protected $fillable = [
         'venta_id',
         'producto_id',
@@ -42,6 +45,9 @@ class DetalleVenta extends Model
         'updated_at' => 'datetime',
     ];
 
+    /**
+     * @var list<string>
+     */
     protected $appends = [
         'precio_base',
         'total',
@@ -53,11 +59,17 @@ class DetalleVenta extends Model
     |--------------------------------------------------------------------------
     */
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Venta, DetalleVenta>
+     */
     public function venta(): BelongsTo
     {
         return $this->belongsTo(Venta::class, 'venta_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Producto, DetalleVenta>
+     */
     public function producto(): BelongsTo
     {
         return $this->belongsTo(Producto::class, 'producto_id');
@@ -79,7 +91,7 @@ class DetalleVenta extends Model
      */
     public function getTotalAttribute(): float
     {
-        return $this->subtotal;
+        return (float) $this->subtotal;
     }
 
     /*
@@ -99,16 +111,12 @@ class DetalleVenta extends Model
 
         // Después de guardar, recalcular totales de la venta
         static::saved(function (DetalleVenta $detalle) {
-            if ($detalle->venta) {
-                $detalle->venta->calcularTotales();
-            }
+            $detalle->venta->calcularTotales();
         });
 
         // Después de eliminar, recalcular totales de la venta
         static::deleted(function (DetalleVenta $detalle) {
-            if ($detalle->venta) {
-                $detalle->venta->calcularTotales();
-            }
+            $detalle->venta->calcularTotales();
         });
     }
 }

@@ -41,7 +41,7 @@ class DetalleCompra extends Model
     /**
      * Atributos asignables en masa
      *
-     * @var array<string>
+     * @var list<string>
      */
     protected $fillable = [
         'compra_id',
@@ -71,7 +71,7 @@ class DetalleCompra extends Model
     /**
      * Atributos computados agregados a JSON/array
      *
-     * @var array<string>
+     * @var list<string>
      */
     protected $appends = [
         'precio_base',
@@ -86,6 +86,8 @@ class DetalleCompra extends Model
 
     /**
      * Relación con Compra
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Compra, DetalleCompra>
      */
     public function compra(): BelongsTo
     {
@@ -94,6 +96,8 @@ class DetalleCompra extends Model
 
     /**
      * Relación con Producto
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Producto, DetalleCompra>
      */
     public function producto(): BelongsTo
     {
@@ -159,16 +163,12 @@ class DetalleCompra extends Model
 
         // Después de guardar, recalcular totales de la compra
         static::saved(function (DetalleCompra $detalle) {
-            if ($detalle->compra) {
-                $detalle->compra->calcularTotales();
-            }
+            $detalle->compra->calcularTotales();
         });
 
         // Después de eliminar, recalcular totales de la compra
         static::deleted(function (DetalleCompra $detalle) {
-            if ($detalle->compra) {
-                $detalle->compra->calcularTotales();
-            }
+            $detalle->compra->calcularTotales();
         });
     }
 }

@@ -5,13 +5,14 @@ namespace App\Services;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
+use Throwable;
 
 class AuditLogger
 {
     /**
      * Registra una acción en el log con formato detallado.
      */
-    public static function log($tipo, $nivel, $descripcion, $exception = null)
+    public static function log(string $tipo, string $nivel, string $descripcion, ?Throwable $exception = null): void
     {
         try {
             $user = Auth::check()
@@ -23,7 +24,7 @@ class AuditLogger
             $fecha = now()->format('Y-m-d H:i:s');
 
             // Construir mensaje multilínea
-            $mensaje = "\n[".$fecha.']';
+            $mensaje = "\n[".$fecha."]";
             $mensaje .= "\nTIPO: ".strtoupper($tipo);
             $mensaje .= "\nNIVEL: ".$nivel;
             $mensaje .= "\nDESCRIPCIÓN: ".$descripcion;
@@ -41,19 +42,20 @@ class AuditLogger
 
             // Usamos el canal 'daily' para rotación diaria de logs
             Log::channel('daily')->info($mensaje);
-        } catch (\Exception $e) {
+        } catch (
+Exception $e) {
             // Fallback por si falla el logging mismo
             Log::error('Error crítico al intentar registrar log de auditoría: '.$e->getMessage());
         }
     }
 
     // Helpers para acciones comunes
-    public static function consulta($descripcion)
+    public static function consulta(string $descripcion): void
     {
         self::log('CONSULTA', 'info', $descripcion);
     }
 
-    public static function insercion($descripcion, $datos = null)
+    public static function insercion(string $descripcion, mixed $datos = null): void
     {
         $desc = $descripcion;
         if ($datos) {
@@ -62,7 +64,7 @@ class AuditLogger
         self::log('INSERCIÓN', 'success', $desc);
     }
 
-    public static function actualizacion($descripcion, $cambios = null)
+    public static function actualizacion(string $descripcion, mixed $cambios = null): void
     {
         $desc = $descripcion;
         if ($cambios) {
@@ -71,7 +73,7 @@ class AuditLogger
         self::log('ACTUALIZACIÓN', 'info', $desc);
     }
 
-    public static function eliminacion($descripcion, $id = null)
+    public static function eliminacion(string $descripcion, int|string|null $id = null): void
     {
         $desc = $descripcion;
         if ($id) {
@@ -80,12 +82,12 @@ class AuditLogger
         self::log('ELIMINACIÓN', 'warning', $desc);
     }
 
-    public static function error($descripcion, $exception = null)
+    public static function error(string $descripcion, ?Throwable $exception = null): void
     {
         self::log('ERROR', 'error', $descripcion, $exception);
     }
 
-    public static function login($descripcion)
+    public static function login(string $descripcion): void
     {
         self::log('LOGIN', 'info', $descripcion);
     }

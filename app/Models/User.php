@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
@@ -46,6 +47,9 @@ class User extends Authenticatable
     |--------------------------------------------------------------------------
     */
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<Rol>
+     */
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Rol::class, 'rol_usuario', 'user_id', 'rol_id')
@@ -58,11 +62,19 @@ class User extends Authenticatable
     |--------------------------------------------------------------------------
     */
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
+     */
     public function scopeActivos(Builder $query): Builder
     {
         return $query->where('estado', true);
     }
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
+     */
     public function scopeInactivos(Builder $query): Builder
     {
         return $query->where('estado', false);
@@ -95,6 +107,8 @@ class User extends Authenticatable
 
     /**
      * Asigna roles al usuario (reemplaza los existentes)
+     *
+     * @param list<int> $rolIds
      */
     public function asignarRoles(array $rolIds): void
     {
@@ -103,6 +117,8 @@ class User extends Authenticatable
 
     /**
      * Agrega roles al usuario (sin reemplazar)
+     *
+     * @param list<int> $rolIds
      */
     public function agregarRoles(array $rolIds): void
     {
@@ -125,8 +141,10 @@ class User extends Authenticatable
 
     /**
      * Obtiene todos los permisos del usuario a través de sus roles
+     *
+     * @return \Illuminate\Support\Collection<int, Permiso>
      */
-    public function getPermisos()
+    public function getPermisos(): Collection
     {
         return Permiso::whereHas('roles', function ($query) {
             $query->whereIn('roles.id', $this->roles->pluck('id'));
@@ -152,6 +170,8 @@ class User extends Authenticatable
 
     /**
      * Verifica si el usuario tiene alguno de los permisos indicados
+     *
+     * @param list<string> $codigosPermisos
      */
     public function tieneAlgunPermiso(array $codigosPermisos): bool
     {
@@ -164,6 +184,8 @@ class User extends Authenticatable
 
     /**
      * Verifica si el usuario tiene todos los permisos indicados
+     *
+     * @param list<string> $codigosPermisos
      */
     public function tieneTodosLosPermisos(array $codigosPermisos): bool
     {

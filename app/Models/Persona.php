@@ -37,7 +37,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read Cliente|null $cliente Relación con cliente
  * @property-read Proveedor|null $proveedor Relación con proveedor
  *
- * @method static Builder activas() Scope para filtrar personas activas
+ * @method static \Illuminate\Database\Eloquent\Builder<static> activas() Scope para filtrar personas activas
+ * @method static \Illuminate\Database\Eloquent\Builder<static> porTipoDocumento(string $tipo)
+ * @method static \Illuminate\Database\Eloquent\Builder<static> porNumeroDocumento(string $numero)
  */
 class Persona extends Model
 {
@@ -56,7 +58,7 @@ class Persona extends Model
      * Define los campos que pueden ser llenados mediante asignación masiva
      * para protección contra vulnerabilidades de asignación masiva
      *
-     * @var array<string>
+     * @var list<string>
      */
     protected $fillable = [
         'tipo_documento',      // Tipo de documento (DNI, RUC, CE, PASAPORTE)
@@ -97,7 +99,7 @@ class Persona extends Model
      * Estos accessors se incluyen automáticamente en JSON/array
      * NOTA: Puede afectar rendimiento en consultas masivas
      *
-     * @var array<string>
+     * @var list<string>
      */
     protected $appends = [
         'nombre_completo',    // Nombre completo calculado
@@ -115,6 +117,8 @@ class Persona extends Model
      *
      * Una persona puede ser registrada como cliente.
      * Esta relación permite acceder a la información comercial del cliente.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne<Cliente, Persona>
      */
     public function cliente(): HasOne
     {
@@ -126,6 +130,8 @@ class Persona extends Model
      *
      * Una persona puede ser registrada como proveedor.
      * Preparado para futuro módulo de gestión de proveedores.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne<Proveedor, Persona>
      */
     public function proveedor(): HasOne
     {
@@ -142,6 +148,9 @@ class Persona extends Model
      * Scope para filtrar solo personas activas
      *
      * Uso: Persona::activas()->get()
+     *
+     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopeActivas(Builder $query): Builder
     {
@@ -152,6 +161,9 @@ class Persona extends Model
      * Scope para filtrar por tipo de documento
      *
      * Uso: Persona::porTipoDocumento('DNI')->get()
+     *
+     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopePorTipoDocumento(Builder $query, string $tipo): Builder
     {
@@ -162,6 +174,9 @@ class Persona extends Model
      * Scope para buscar por número de documento
      *
      * Uso: Persona::porNumeroDocumento('12345678')->first()
+     *
+     * @param \Illuminate\Database\Eloquent\Builder<static> $query
+     * @return \Illuminate\Database\Eloquent\Builder<static>
      */
     public function scopePorNumeroDocumento(Builder $query, string $numero): Builder
     {

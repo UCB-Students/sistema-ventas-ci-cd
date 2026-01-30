@@ -29,6 +29,9 @@ class HealthController extends Controller
         ], $isHealthy ? 200 : 503);
     }
 
+    /**
+     * @return array{ok: bool, meta?: string, error?: string}
+     */
     private function checkDatabase(): array
     {
         try {
@@ -42,6 +45,9 @@ class HealthController extends Controller
         }
     }
 
+    /**
+     * @return array{ok: bool, meta?: string, error?: string}
+     */
     private function checkCache(): array
     {
         try {
@@ -57,6 +63,9 @@ class HealthController extends Controller
         }
     }
 
+    /**
+     * @return array{ok: bool, meta?: string, error?: string}
+     */
     private function checkStorage(): array
     {
         try {
@@ -73,6 +82,8 @@ class HealthController extends Controller
 
     /**
      * Helper para formatear respuestas uniformes y seguras.
+     *
+     * @return array{ok: bool, meta?: string, error?: string}
      */
     private function formatResult(bool $ok, ?string $meta = null, ?Throwable $error = null): array
     {
