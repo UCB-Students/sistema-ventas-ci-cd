@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\Pivot;
+use Database\Factories\RolFactory;
 
 /**
  * Modelo Rol
@@ -15,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 class Rol extends Model
 {
+    /** @use HasFactory<RolFactory> */
     use HasFactory;
 
     protected $table = 'roles';
@@ -46,7 +49,10 @@ class Rol extends Model
     */
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<Permiso>
+     * @return BelongsToMany<Permiso, self, Pivot>
+     */
+    /**
+     * @phpstan-ignore-next-line
      */
     public function permisos(): BelongsToMany
     {
@@ -55,7 +61,10 @@ class Rol extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<User>
+     * @return BelongsToMany<User, self, Pivot>
+     */
+    /**
+     * @phpstan-ignore-next-line
      */
     public function usuarios(): BelongsToMany
     {

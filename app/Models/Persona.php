@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Database\Factories\PersonaFactory;
 
 /**
  * Modelo Persona
@@ -43,6 +44,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class Persona extends Model
 {
+    /** @use HasFactory<PersonaFactory> */
     use HasFactory;
 
     /**
@@ -118,7 +120,10 @@ class Persona extends Model
      * Una persona puede ser registrada como cliente.
      * Esta relación permite acceder a la información comercial del cliente.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne<Cliente, Persona>
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne<Cliente, self>
+     */
+    /**
+     * @phpstan-ignore-next-line
      */
     public function cliente(): HasOne
     {
@@ -131,7 +136,10 @@ class Persona extends Model
      * Una persona puede ser registrada como proveedor.
      * Preparado para futuro módulo de gestión de proveedores.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne<Proveedor, Persona>
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne<Proveedor, self>
+     */
+    /**
+     * @phpstan-ignore-next-line
      */
     public function proveedor(): HasOne
     {

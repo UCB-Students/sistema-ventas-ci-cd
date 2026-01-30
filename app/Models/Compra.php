@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
+use Database\Factories\CompraFactory;
 
 /**
  * Modelo Compra
@@ -48,6 +49,7 @@ use Illuminate\Support\Facades\DB;
  */
 class Compra extends Model
 {
+    /** @use HasFactory<CompraFactory> */
     use HasFactory;
 
     /**
@@ -154,7 +156,10 @@ class Compra extends Model
     /**
      * Relación con Proveedor
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Proveedor, Compra>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Proveedor, self>
+     */
+    /**
+     * @phpstan-ignore-next-line
      */
     public function proveedor(): BelongsTo
     {
@@ -164,7 +169,10 @@ class Compra extends Model
     /**
      * Relación con DetalleCompra
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<DetalleCompra, Compra>
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<DetalleCompra, self>
+     */
+    /**
+     * @phpstan-ignore-next-line
      */
     public function detalles(): HasMany
     {

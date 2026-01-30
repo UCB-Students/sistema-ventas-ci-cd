@@ -42,8 +42,7 @@ class AuditLogger
 
             // Usamos el canal 'daily' para rotación diaria de logs
             Log::channel('daily')->info($mensaje);
-        } catch (
-Exception $e) {
+        } catch (\Exception $e) {
             // Fallback por si falla el logging mismo
             Log::error('Error crítico al intentar registrar log de auditoría: '.$e->getMessage());
         }

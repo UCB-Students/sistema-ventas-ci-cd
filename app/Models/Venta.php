@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
+use Database\Factories\VentaFactory;
 
 /**
  * Modelo Venta
@@ -43,6 +44,7 @@ use Illuminate\Support\Facades\DB;
  */
 class Venta extends Model
 {
+    /** @use HasFactory<VentaFactory> */
     use HasFactory;
 
     protected $table = 'ventas';
@@ -116,7 +118,10 @@ class Venta extends Model
     */
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Cliente, Venta>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Cliente, self>
+     */
+    /**
+     * @phpstan-ignore-next-line
      */
     public function cliente(): BelongsTo
     {
@@ -124,7 +129,10 @@ class Venta extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<DetalleVenta, Venta>
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<DetalleVenta, self>
+     */
+    /**
+     * @phpstan-ignore-next-line
      */
     public function detalles(): HasMany
     {

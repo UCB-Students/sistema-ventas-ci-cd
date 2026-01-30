@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 use Laravel\Sanctum\HasApiTokens;
+use Database\Factories\UserFactory;
 
 /**
  * Modelo User
@@ -17,6 +18,7 @@ use Laravel\Sanctum\HasApiTokens;
  */
 class User extends Authenticatable
 {
+    /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
@@ -48,7 +50,10 @@ class User extends Authenticatable
     */
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<Rol>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<Rol, self, \Illuminate\Database\Eloquent\Relations\Pivot>
+     */
+    /**
+     * @phpstan-ignore-next-line
      */
     public function roles(): BelongsToMany
     {

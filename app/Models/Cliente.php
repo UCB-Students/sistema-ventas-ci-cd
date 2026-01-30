@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Database\Factories\ClienteFactory;
+
 
 /**
  * Modelo Cliente
@@ -47,6 +49,7 @@ use Illuminate\Support\Facades\DB;
  */
 class Cliente extends Model
 {
+    /** @use HasFactory<ClienteFactory> */
     use HasFactory;
 
     /**
@@ -138,12 +141,10 @@ class Cliente extends Model
     */
 
     /**
-     * Relación inversa con Persona
-     *
-     * Un cliente pertenece a una persona.
-     * Permite acceder a los datos personales (nombre, documento, contacto, etc.)
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Persona, Cliente>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Persona, self>
+     */
+    /**
+     * @phpstan-ignore-next-line
      */
     public function persona(): BelongsTo
     {

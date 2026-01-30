@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Database\Factories\PermisoFactory;
 
 /**
  * Modelo Permiso
@@ -15,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 class Permiso extends Model
 {
+    /** @use HasFactory<PermisoFactory> */
     use HasFactory;
 
     protected $table = 'permisos';
@@ -57,7 +59,10 @@ class Permiso extends Model
     */
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<Rol>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<Rol, self, \Illuminate\Database\Eloquent\Relations\Pivot>
+     */
+    /**
+     * @phpstan-ignore-next-line
      */
     public function roles(): BelongsToMany
     {

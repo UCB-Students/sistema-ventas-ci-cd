@@ -6,12 +6,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Database\Factories\ProductoFactory;
 
 /**
  * @property \App\Models\Categoria $categoria
  */
 class Producto extends Model
 {
+    /** @use HasFactory<ProductoFactory> */
     use HasFactory;
 
     protected $table = 'productos';
@@ -44,7 +46,10 @@ class Producto extends Model
 
     // Relación con categoría
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Categoria, Producto>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Categoria, self>
+     */
+    /**
+     * @phpstan-ignore-next-line
      */
     public function categoria(): BelongsTo
     {

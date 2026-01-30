@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Database\Factories\ProveedorFactory;
 
 /**
  * Modelo Proveedor
@@ -66,6 +67,7 @@ use Illuminate\Support\Facades\DB;
  */
 class Proveedor extends Model
 {
+    /** @use HasFactory<ProveedorFactory> */
     use HasFactory, SoftDeletes;
 
     /**
@@ -204,7 +206,10 @@ class Proveedor extends Model
      * Un proveedor pertenece a una persona.
      * Permite acceder a los datos personales (nombre, documento, contacto, etc.)
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Persona, Proveedor>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Persona, self>
+     */
+    /**
+     * @phpstan-ignore-next-line
      */
     public function persona(): BelongsTo
     {

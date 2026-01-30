@@ -246,7 +246,7 @@ class ReporteService
             $query->where('categoria_id', $filtros['categoria_id']);
         }
 
-        if (! empty($filtros['stock_bajo']) && $filtros['stock_bajo']) {
+        if (isset($filtros['stock_bajo']) && $filtros['stock_bajo'])  {
             $query->whereRaw('stock <= stock_minimo');
         }
 

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Database\Factories\DetalleVentaFactory;
 
 /**
  * Modelo DetalleVenta
@@ -18,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class DetalleVenta extends Model
 {
+    /** @use HasFactory<DetalleVentaFactory> */
     use HasFactory;
 
     protected $table = 'detalle_ventas';
@@ -60,7 +62,10 @@ class DetalleVenta extends Model
     */
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Venta, DetalleVenta>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Venta, self>
+     */
+    /**
+     * @phpstan-ignore-next-line
      */
     public function venta(): BelongsTo
     {
@@ -68,7 +73,10 @@ class DetalleVenta extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Producto, DetalleVenta>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Producto, self>
+     */
+    /**
+     * @phpstan-ignore-next-line
      */
     public function producto(): BelongsTo
     {
